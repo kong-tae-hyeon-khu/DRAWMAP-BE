@@ -26,6 +26,15 @@ dependencies {
 	implementation group: 'org.hibernate', name: 'hibernate-spatial', version: '5.6.9.Final'
 
 
+	// Spring Security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	testImplementation 'org.springframework.security:spring-security-test'
+	// OAuth2Service를 생성하기 위한 의존성 추가
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	// JWT를 사용하기 위한 의존성 추가
+	implementation 'com.auth0:java-jwt:4.2.1'
+
+
 	// swagger dependency
 	implementation "io.springfox:springfox-boot-starter:3.0.0"
 	implementation "io.springfox:springfox-swagger-ui:3.0.0"
