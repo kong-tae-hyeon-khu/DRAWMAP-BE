@@ -1,8 +1,5 @@
-package com.umc.drawmap.dto.UserChallenge;
+package com.umc.drawmap.dto.userChallenge;
 
-import com.umc.drawmap.domain.Challenge;
-import com.umc.drawmap.domain.User;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
