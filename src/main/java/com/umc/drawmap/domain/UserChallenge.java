@@ -4,7 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 
-
+// 도전인증 테이블
 @Entity
 @Getter
 @Builder
@@ -17,11 +17,13 @@ public class UserChallenge {
     @Column(name = "user_challenge_id")
     private Long id;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @Column(name = "challenge_course_id")
-    private Long challengeCourseId;
+    @OneToOne
+    @JoinColumn(name = "challenge_course_id")
+    private Challenge challenge;
 
     @Column(name = "challenge_comment")
     private String challengeComment;
