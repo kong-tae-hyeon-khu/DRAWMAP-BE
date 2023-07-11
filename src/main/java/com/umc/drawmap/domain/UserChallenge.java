@@ -35,4 +35,12 @@ public class UserChallenge {
     @Column(name = "challenge_image")
     private String challengeImage;
 
+
+    public void update(String challengeComment, int challengeStar, String challengeImage) {
+        this.challengeComment = challengeComment;
+        this.challengeStar = challengeStar;
+        this.challengeImage = challengeImage;
+    }
+
+
 }
