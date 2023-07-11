@@ -1,5 +1,6 @@
 package com.umc.drawmap.domain;
 
+import com.umc.drawmap.dto.UserCourseReqDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -9,7 +10,7 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserCourse extends BaseEntity{
+public class UserCourse extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,8 +29,9 @@ public class UserCourse extends BaseEntity{
     @Column(name = "user_course_difficulty")
     private String userCourseDifficulty;
 
-    @Column(name = "user_course_ontent")
+    @Column(name = "user_course_content")
     private String userCourseContent;
+
     @Column(name = "user_image")
     private String userImage;
 
@@ -39,5 +41,18 @@ public class UserCourse extends BaseEntity{
     @Column(columnDefinition = "INT DEFAULT 0")
     private int scrapCount;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id")
+    private User user;
 
+    public UserCourse update(String userCourseTitle, String userCourseArea,
+                             String userCourseDifficulty, String userCourseContent,
+                             String files) {
+        this.userCourseTitle = userCourseTitle;
+        this.userCourseArea = userCourseArea;
+        this.userCourseDifficulty = userCourseDifficulty;
+        this.userCourseContent = userCourseContent;
+        this.files = files;
+        return this;
+    }
 }
