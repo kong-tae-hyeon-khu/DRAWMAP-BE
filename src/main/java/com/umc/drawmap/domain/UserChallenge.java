@@ -4,26 +4,24 @@ import lombok.*;
 
 import javax.persistence.*;
 
-// 도전인증 테이블
+
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserChallenge {
+public class UserChallenge extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_challenge_id")
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(name = "user_id")
+    private Long userId;
 
-    @OneToOne
-    @JoinColumn(name = "challenge_course_id")
-    private Challenge challenge;
+    @Column(name = "challenge_course_id")
+    private Long challengeCourseId;
 
     @Column(name = "challenge_comment")
     private String challengeComment;
