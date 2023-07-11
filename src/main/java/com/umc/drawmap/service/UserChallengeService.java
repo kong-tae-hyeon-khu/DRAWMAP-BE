@@ -60,4 +60,32 @@ public class UserChallengeService {
         return true;
     }
 
+    public Boolean userChallengeUpdate(Long userId, Long challengeId ,UserChallengeReqDto.UserChallengeUpdateDto dto) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        Optional<Challenge> challengeOptional = challengeRepository.findById(challengeId);
+
+        if (!userOptional.isPresent()) {
+            throw new NoExistUserException("Please Check User Id");
+        }
+
+        if (!challengeOptional.isPresent()) {
+            throw new NoExistUserException("Please Check Challenge Id");
+        }
+
+
+        Optional<UserChallenge> userChallengeOptional = userChallengeRepository.findUserChallengeByUserAndChallenge(
+                userOptional.get(), challengeOptional.get()
+        );
+
+        if (!userChallengeOptional.isPresent()) {
+            throw new IllegalArgumentException("해당 유저와 코스에 일치하는 데이터가 존재하지 않습니다.");
+        }
+
+        UserChallenge userChallenge = userChallengeOptional.get();
+        userChallenge.update(dto.getChallengeComment(), dto.getChallengeStar(), dto.getChallengeImage());
+
+        userChallengeRepository.save(userChallenge);
+        return true;
+    }
+
 }

@@ -15,4 +15,13 @@ public class UserChallengeReqDto {
         private int challengeStar;
         private String challengeImage;
     }
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class UserChallengeUpdateDto {
+        // Body -> Update 할 대상들.
+        private String challengeComment;
+        private int challengeStar;
+        private String challengeImage;
+    }
 }
