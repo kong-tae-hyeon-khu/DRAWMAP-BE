@@ -1,5 +1,6 @@
 package com.umc.drawmap.domain;
 
+import com.umc.drawmap.dto.ChallengeReqDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -37,5 +38,14 @@ public class Challenge extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
     private User user;
+
+    public Challenge update(String challengeCourseTitle, String challengeCourseArea, String challengeCourseDifficulty, String challengeCourseContent, String challengeImage){
+        this.challengeCourseTitle=challengeCourseTitle;
+        this.challengeCourseArea=challengeCourseArea;
+        this.challengeCourseDifficulty=challengeCourseDifficulty;
+        this.challengeCourseContent=challengeCourseContent;
+        this.challengeImage=challengeImage;
+        return this;
+    }
 
 }

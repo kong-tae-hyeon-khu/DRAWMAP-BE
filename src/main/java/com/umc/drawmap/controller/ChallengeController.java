@@ -28,5 +28,11 @@ public class ChallengeController {
         return new BaseResponse<>("새로운 도전코스 등록 완료");
     }
 
-    //@PatchMapping("/course/{courseId}")
+    @PatchMapping("/course/{courseId}")
+    public BaseResponse<String> updateChallenge(@PathVariable(name = "courseId")Long courseId,
+                                                @RequestPart(value = "files", required = false) List<MultipartFile> files,
+                                                @ModelAttribute ChallengeReqDto.UpdateChallengeDto request) throws IOException{
+        Challenge challenge = challengeService.update(courseId,files, request);
+        return new BaseResponse<>("도전코스 수정 완료");
+    }
 }

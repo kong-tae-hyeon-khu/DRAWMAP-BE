@@ -21,13 +21,20 @@ public class ChallengeReqDto {
         private String challengeCourseContent;
     }
 
-//    @Builder
-//    @NoArgsConstructor
-//    @AllArgsConstructor
-//    @Getter
-//    @Setter
-//    public static class UpdateChallengeDto{
-//
-//    }
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class UpdateChallengeDto{
+        private String challengeCourseTitle;
+
+        private String challengeCourseArea;
+
+        private String challengeCourseDifficulty;
+
+        private String challengeCourseContent;
+
+    }
 
 }
