@@ -24,7 +24,7 @@ spring:
         registration:
           google:
             client-id: "795041392930-2sadf26311pbnlcq861qhbam6tb4pm7m.apps.googleusercontent.com"
-            client-secret: "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"
+            client-secret: ${GOOGLE_KEY}
             scope: profile, email
             redirect-uri: "http://localhost:9000/oauth2/callback/google"
 
