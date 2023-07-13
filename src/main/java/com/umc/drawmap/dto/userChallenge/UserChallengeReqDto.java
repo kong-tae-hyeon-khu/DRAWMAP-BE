@@ -24,4 +24,5 @@ public class UserChallengeReqDto {
         private int challengeStar;
         private String challengeImage;
     }
+
 }

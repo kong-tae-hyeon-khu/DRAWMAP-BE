@@ -1,8 +1,11 @@
 package com.umc.drawmap.controller;
 
+import com.umc.drawmap.domain.UserChallenge;
 import com.umc.drawmap.dto.userChallenge.UserChallengeReqDto;
 import com.umc.drawmap.service.UserChallengeService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class UserChallengeController {
@@ -23,5 +26,16 @@ public class UserChallengeController {
                                       @RequestBody UserChallengeReqDto.UserChallengeUpdateDto dto) {
         userChallengeService.userChallengeUpdate(userId, courseId, dto);
         return "수정 완료.";
+    }
+    // 모든 유저들의 도전 리스트 조회.
+    @GetMapping(path = "/challenge/cert")
+    public List<UserChallenge> userChallengeList() {
+        return userChallengeService.userChallengeList();
+    }
+
+    @DeleteMapping(path = "/challenge/cert/{userId}/{courseId}")
+    public String userChallengeDelete(@PathVariable Long userId, @PathVariable Long courseId) {
+        userChallengeService.userChallengeDelete(userId, courseId);
+        return "삭제 완료.";
     }
 }
