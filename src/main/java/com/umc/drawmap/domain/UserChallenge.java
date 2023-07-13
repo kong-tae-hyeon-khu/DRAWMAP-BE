@@ -18,11 +18,14 @@ public class UserChallenge extends BaseEntity{
     @Column(name = "user_challenge_id")
     private Long id;
 
-    @Column(name = "user_id")
-    private Long userId;
 
-    @Column(name = "challenge_course_id")
-    private Long challengeCourseId;
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToOne
+    @JoinColumn(name = "challenge_course_id")
+    private Challenge challenge;
 
     @Column(name = "challenge_comment")
     private String challengeComment;
@@ -32,5 +35,13 @@ public class UserChallenge extends BaseEntity{
 
     @Column(name = "challenge_image")
     private String challengeImage;
+
+
+    public void update(String challengeComment, int challengeStar, String challengeImage) {
+        this.challengeComment = challengeComment;
+        this.challengeStar = challengeStar;
+        this.challengeImage = challengeImage;
+    }
+
 
 }
