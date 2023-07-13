@@ -10,7 +10,8 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserChallenge {
+
+public class UserChallenge extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
