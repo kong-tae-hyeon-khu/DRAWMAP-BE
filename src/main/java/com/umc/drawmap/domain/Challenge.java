@@ -1,5 +1,6 @@
 package com.umc.drawmap.domain;
 
+import com.umc.drawmap.dto.ChallengeReqDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Challenge {
+public class Challenge extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,5 +38,14 @@ public class Challenge {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
     private User user;
+
+    public Challenge update(String challengeCourseTitle, String challengeCourseArea, String challengeCourseDifficulty, String challengeCourseContent, String challengeImage){
+        this.challengeCourseTitle=challengeCourseTitle;
+        this.challengeCourseArea=challengeCourseArea;
+        this.challengeCourseDifficulty=challengeCourseDifficulty;
+        this.challengeCourseContent=challengeCourseContent;
+        this.challengeImage=challengeImage;
+        return this;
+    }
 
 }
