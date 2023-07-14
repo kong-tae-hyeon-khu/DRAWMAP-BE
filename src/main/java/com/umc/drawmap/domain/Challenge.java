@@ -1,6 +1,5 @@
 package com.umc.drawmap.domain;
 
-import com.umc.drawmap.dto.ChallengeReqDto;
 import lombok.*;
 
 import javax.persistence.*;

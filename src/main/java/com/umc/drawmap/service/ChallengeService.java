@@ -1,7 +1,7 @@
 package com.umc.drawmap.service;
 
 import com.umc.drawmap.domain.Challenge;
-import com.umc.drawmap.dto.ChallengeReqDto;
+import com.umc.drawmap.dto.challenge.ChallengeReqDto;
 import com.umc.drawmap.repository.ChallengeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,10 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -38,6 +36,10 @@ public class ChallengeService {
         Challenge challenge = challengeRepository.findById(challengeId).get();
         challenge.update(request.getChallengeCourseTitle(), request.getChallengeCourseArea(), request.getChallengeCourseDifficulty(), request.getChallengeCourseContent(), FileService.fileUpload(files));
         return challenge;
+    }
+
+    public void delete(Long challengeId){
+        challengeRepository.deleteById(challengeId);
     }
 
 }
