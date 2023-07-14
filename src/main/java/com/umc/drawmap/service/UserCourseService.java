@@ -39,4 +39,10 @@ public class UserCourseService {
                 FileService.fileUpload(files));
         return userCourse;
     }
+
+    // 유저 도전 조회
+    public List<UserCourse> userCourseList() {
+        return userCourseRepository.findAll();
+    }
+
 }
