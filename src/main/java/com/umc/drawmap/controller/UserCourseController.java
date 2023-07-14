@@ -36,4 +36,10 @@ public class UserCourseController {
         UserCourse userCourse = userCourseService.update(ucourseId, files, request);
         return new BaseResponse<>("유저코스 수정 완료");
     }
+
+    // 전체 리스트 조회
+    @GetMapping("/usercourse")
+    public List<UserCourse> userCourseList() {
+        return userCourseService.userCourseList();
+    }
 }
