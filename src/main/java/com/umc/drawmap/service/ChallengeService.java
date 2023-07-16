@@ -1,18 +1,24 @@
 package com.umc.drawmap.service;
 
 import com.umc.drawmap.domain.Challenge;
-import com.umc.drawmap.dto.ChallengeReqDto;
+import com.umc.drawmap.domain.User;
+import com.umc.drawmap.domain.UserChallenge;
+import com.umc.drawmap.dto.challenge.ChallengeReqDto;
 import com.umc.drawmap.repository.ChallengeRepository;
+import com.umc.drawmap.repository.UserChallengeRepository;
+import com.umc.drawmap.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -20,6 +26,9 @@ import java.util.Optional;
 public class ChallengeService {
 
     private final ChallengeRepository challengeRepository;
+
+    private final UserChallengeRepository userChallengeRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public Challenge create(List<MultipartFile> files, ChallengeReqDto.CreateChallengeDto request) throws IOException{
@@ -38,6 +47,33 @@ public class ChallengeService {
         Challenge challenge = challengeRepository.findById(challengeId).get();
         challenge.update(request.getChallengeCourseTitle(), request.getChallengeCourseArea(), request.getChallengeCourseDifficulty(), request.getChallengeCourseContent(), FileService.fileUpload(files));
         return challenge;
+    }
+
+    public void delete(Long challengeId){
+        challengeRepository.deleteById(challengeId);
+    }
+
+    public Challenge findById(Long challengeId){
+        return challengeRepository.findById(challengeId).get();
+    }
+
+    public List<Challenge> findAllByUser(Long userId, int page, int size){
+
+        User user = userRepository.findById(userId).get();
+        List<UserChallenge> userChallengeList = userChallengeRepository.findAllByUser(user);
+        List<Challenge> list = new ArrayList<>();
+        for (UserChallenge userchallenge: userChallengeList){
+            Challenge challenge = challengeRepository.findChallengeByUserChallenge(userchallenge);
+            list.add(challenge);
+        }
+        //Pageable pageable = PageRequest.of(page, size);
+        return list;
+    }
+
+    public Page<Challenge> findAll(int page, int size){
+        Pageable pageable = PageRequest.of(page,size);
+        Page<Challenge> challengeList = challengeRepository.findAll(pageable);
+        return challengeList;
     }
 
 }
