@@ -30,6 +30,14 @@ public class SpotImage extends BaseEntity{
     @JoinColumn(name = "challenge_course_id")
     private Challenge challenge;
 
+    public SpotImage update(String spotTitle, String spotArea, String spotContent, String spotImage){
+        this.spotTitle=spotTitle;
+        this.spotArea=spotArea;
+        this.spotContent=spotContent;
+        this.spotImage=spotImage;
+        return this;
+    }
+
 
 
 }
