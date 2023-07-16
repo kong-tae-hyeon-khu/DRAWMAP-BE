@@ -3,6 +3,8 @@ package com.umc.drawmap.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -36,7 +38,10 @@ public class Challenge extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
-    private User user;
+    private UserChallenge userChallenge;
+
+    @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL)
+    private List<SpotImage> spotImages = new ArrayList<>();
 
     public Challenge update(String challengeCourseTitle, String challengeCourseArea, String challengeCourseDifficulty, String challengeCourseContent, String challengeImage){
         this.challengeCourseTitle=challengeCourseTitle;

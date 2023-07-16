@@ -18,7 +18,6 @@ public class UserChallenge extends BaseEntity{
     @Column(name = "user_challenge_id")
     private Long id;
 
-
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

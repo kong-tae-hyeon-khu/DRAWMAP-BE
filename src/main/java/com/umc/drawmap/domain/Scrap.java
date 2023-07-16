@@ -20,4 +20,8 @@ public class Scrap {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="user_course_id")
     private UserCourse userCourse;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "challenge_course_id")
+    private Challenge challenge;
 }
