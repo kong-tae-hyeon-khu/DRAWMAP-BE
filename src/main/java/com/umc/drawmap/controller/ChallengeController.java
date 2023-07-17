@@ -34,15 +34,15 @@ public class ChallengeController {
 
     // 도전코스 전체 리스트 조회 3개씩
     @GetMapping("/courses")
-    public ResponseEntity<ChallengeResDto.ChallengeListDto> getChallengeList(@RequestParam("page")int page){
-        Page<Challenge> challengeList = challengeService.findAll(page, 3);
+    public ResponseEntity<ChallengeResDto.ChallengeListDto> getChallengeList(){
+        List<Challenge> challengeList = challengeService.findAll();
         return ResponseEntity.ok(ChallengeConverter.toChallengeListDto(challengeList));
     }
 
     // 도전코스 본인 리스트 조회 (참여한 이달의 도전코스) 6개씩
     @GetMapping("/{userId}/courses")
-    public ResponseEntity<ChallengeResDto.MyChallengeListDto> getChallengeMyList(@PathVariable(name = "userId")Long userId, @RequestParam("page")int page){
-        List<Challenge> challengeMyList = challengeService.findAllByUser(userId, page, 6);
+    public ResponseEntity<ChallengeResDto.MyChallengeListDto> getChallengeMyList(@PathVariable(name = "userId")Long userId){
+        List<Challenge> challengeMyList = challengeService.findAllByUser(userId);
         return ResponseEntity.ok(ChallengeConverter.toChallengeMyListDto(challengeMyList));
     }
 

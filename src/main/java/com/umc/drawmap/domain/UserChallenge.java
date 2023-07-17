@@ -14,7 +14,7 @@ import javax.persistence.*;
 public class UserChallenge extends BaseEntity{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_challenge_id")
     private Long id;
 

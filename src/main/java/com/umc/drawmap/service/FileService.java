@@ -25,4 +25,12 @@ public class FileService {
         return String.join(",",list);
 
     }
+
+    public static String singleFileUpload(MultipartFile file) throws IOException{
+        String rootPath = System.getProperty("user.dir");
+        String fileDir = rootPath+"/files/";
+        File saveFile = new File(fileDir, file.getOriginalFilename());
+        file.transferTo(saveFile);
+        return saveFile.getPath();
+    }
 }

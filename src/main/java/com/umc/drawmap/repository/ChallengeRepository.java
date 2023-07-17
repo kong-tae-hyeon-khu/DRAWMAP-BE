@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ChallengeRepository extends JpaRepository<Challenge, Long>{
-    Optional<Challenge> findById(Long challengeId);
 
     //Page<Challenge> findAllByUser(Pageable pageable, User user);
 

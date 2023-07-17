@@ -15,7 +15,7 @@ import java.util.List;
 public class Challenge extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "challenge_course_id")
     private Long id;
 
@@ -51,5 +51,7 @@ public class Challenge extends BaseEntity {
         this.challengeImage=challengeImage;
         return this;
     }
-
+    public void updateCount(int scrapCount) {
+        this.scrapCount = scrapCount;
+    }
 }
