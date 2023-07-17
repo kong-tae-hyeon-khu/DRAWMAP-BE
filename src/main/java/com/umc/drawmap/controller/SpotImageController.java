@@ -5,6 +5,7 @@ import com.umc.drawmap.dto.SpotImageReqDto;
 import com.umc.drawmap.exception.BaseResponse;
 import com.umc.drawmap.service.SpotImageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,11 +18,12 @@ public class SpotImageController {
 
     private final SpotImageService spotImageService;
 
-    @PostMapping("/spot")
-    public BaseResponse<String> createSpotImage(@RequestPart(value = "file", required = false)MultipartFile file,
+    @PostMapping("/spot/{challengeId}")
+    public BaseResponse<String> createSpotImage(@PathVariable(value = "challengeId")Long challengeId,
+                                                @RequestPart(value = "file", required = false) MultipartFile file,
                                                 @ModelAttribute(value = "request")SpotImageReqDto.CreateSpotImageDto request) throws IOException{
 
-        SpotImage spotImage = spotImageService.create(file, request);
+        SpotImage spotImage = spotImageService.create(file, request, challengeId);
         return new BaseResponse<>("새로운 관광지 등록 완료");
 
     }

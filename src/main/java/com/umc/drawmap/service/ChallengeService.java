@@ -57,7 +57,7 @@ public class ChallengeService {
         return challengeRepository.findById(challengeId).get();
     }
 
-    public List<Challenge> findAllByUser(Long userId, int page, int size){
+    public List<Challenge> findAllByUser(Long userId){
 
         User user = userRepository.findById(userId).get();
         List<UserChallenge> userChallengeList = userChallengeRepository.findAllByUser(user);
@@ -66,13 +66,11 @@ public class ChallengeService {
             Challenge challenge = challengeRepository.findChallengeByUserChallenge(userchallenge);
             list.add(challenge);
         }
-        //Pageable pageable = PageRequest.of(page, size);
         return list;
     }
 
-    public Page<Challenge> findAll(int page, int size){
-        Pageable pageable = PageRequest.of(page,size);
-        Page<Challenge> challengeList = challengeRepository.findAll(pageable);
+    public List<Challenge> findAll(){
+        List<Challenge> challengeList = challengeRepository.findAll();
         return challengeList;
     }
 

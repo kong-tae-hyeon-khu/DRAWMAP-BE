@@ -9,7 +9,7 @@ import javax.persistence.*;
 public class Scrap {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name ="scrap_id")
     private Long id;
 

@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class SpotImage extends BaseEntity{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "spot_image_id")
     private Long id;
 

@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SpotImageRepository extends JpaRepository<SpotImage, Long> {
 
-    SpotImage findSpotImageByIdAndChallenge(Long spotImageId, Challenge challenge);
+    SpotImage findByIdAndChallenge(Long spotImageId, Challenge challenge);
 }
