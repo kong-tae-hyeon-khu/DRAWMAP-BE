@@ -42,4 +42,11 @@ public class UserCourseController {
     public List<UserCourse> userCourseList() {
         return userCourseService.userCourseList();
     }
+
+    // 삭제
+    @DeleteMapping("usercourse/{ucourseId}")
+    public BaseResponse<String> deleteUserCourse(@PathVariable(name = "ucourseId")Long ucourseId){
+        userCourseService.delete(ucourseId);
+        return new BaseResponse<>("유저코스 삭제 완료");
+    }
 }
