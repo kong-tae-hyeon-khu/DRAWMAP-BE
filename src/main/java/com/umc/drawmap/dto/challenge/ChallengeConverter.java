@@ -40,13 +40,13 @@ public class ChallengeConverter {
                 .build();
     }
 
-    public static List<ChallengeResDto.ChallengeDto> toChallengeDtoList(Page<Challenge> challengeList){
+    public static List<ChallengeResDto.ChallengeDto> toChallengeDtoList(List<Challenge> challengeList){
         return challengeList.stream()
                 .map(challenge -> toChallengeDto(challenge))
                 .collect(Collectors.toList());
     }
 
-    public static ChallengeResDto.ChallengeListDto toChallengeListDto(Page<Challenge> challengeList){
+    public static ChallengeResDto.ChallengeListDto toChallengeListDto(List<Challenge> challengeList){
         return ChallengeResDto.ChallengeListDto.builder()
                 .challengeList(toChallengeDtoList(challengeList))
                 .build();

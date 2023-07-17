@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class SpotImage extends BaseEntity{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "spot_image_id")
     private Long id;
 
@@ -29,6 +29,14 @@ public class SpotImage extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "challenge_course_id")
     private Challenge challenge;
+
+    public SpotImage update(String spotTitle, String spotArea, String spotContent, String spotImage){
+        this.spotTitle=spotTitle;
+        this.spotArea=spotArea;
+        this.spotContent=spotContent;
+        this.spotImage=spotImage;
+        return this;
+    }
 
 
 
