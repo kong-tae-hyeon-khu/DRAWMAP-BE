@@ -86,6 +86,7 @@ public class ScrapService {
         return "스크랩 성공";
     }
 
+
     public ResponseEntity<List<ScrapResDto.ScrapDto>> getMyScrap(Long userId) {
 
         Optional<User> user = userRepository.findById(userId);
@@ -109,5 +110,43 @@ public class ScrapService {
         }
 
         return ResponseEntity.ok(scrapDtoList);
+    }
+
+    public String deleteMyScrap(Long userId, Long courseId, Long challengeId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (courseId == null) {
+            Optional<Challenge> challengeOptional = challengeRepository.findById(challengeId);
+
+            if (!userOptional.isPresent() || !challengeOptional.isPresent()) {
+                return "유저 아이디 또는 도전 코스의 아이디를 확인해주세요.";
+            }
+            User user = userOptional.get();
+            Challenge challenge = challengeOptional.get();
+            Optional<Scrap> scrapOptional = scrapRepository.findByUserAndChallenge(user, challenge);
+            if (!scrapOptional.isPresent()) {
+                return "해당 스크랩이 존재하지 않습니다.";
+            }
+            Scrap scrap = scrapOptional.get();
+            challenge.updateCount(challenge.getScrapCount() - 1);
+            challengeRepository.save(challenge);
+            scrapRepository.delete(scrap);
+            return "스크랩 삭제 완료";
+        } else {
+            Optional<UserCourse> userCourseOptional = userCourseRepository.findById(courseId);
+            if (!userOptional.isPresent() || !userCourseOptional.isPresent()) {
+                return "유저 아이디 또는 유저 코스의 아이디를 확인해주세요";
+            }
+            User user = userOptional.get();
+            UserCourse userCourse = userCourseOptional.get();
+            Optional<Scrap> scrapOptional = scrapRepository.findByUserAndUserCourse(user, userCourse);
+            if (!scrapOptional.isPresent()) {
+                return "해당 스크랩이 존재하지 않습니다";
+            }
+            Scrap scrap = scrapOptional.get();
+            userCourse.updateCount(userCourse.getScrapCount() - 1);
+            userCourseRepository.save(userCourse);
+            scrapRepository.delete(scrap);
+            return "스크랩 삭제 완료";
+        }
     }
 }
