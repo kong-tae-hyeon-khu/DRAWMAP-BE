@@ -27,4 +27,8 @@ public class ScrapController {
     public ResponseEntity<List<ScrapResDto.ScrapDto>>  getScrap(@PathVariable Long userId) {
         return scrapService.getMyScrap(userId);
     }
+    @DeleteMapping("/scrap/{userId}")
+    public String deleteCourseScrap(@PathVariable Long userId, Long courseId, Long challengeId) {
+        return scrapService.deleteMyScrap(userId, courseId, challengeId);
+    }
 }
