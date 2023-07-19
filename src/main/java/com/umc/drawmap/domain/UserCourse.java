@@ -55,4 +55,8 @@ public class UserCourse extends BaseEntity {
         this.files = files;
         return this;
     }
+
+    public void updateCount(int scrapCount) {
+        this.scrapCount = scrapCount;
+    }
 }

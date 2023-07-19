@@ -51,5 +51,7 @@ public class Challenge extends BaseEntity {
         this.challengeImage=challengeImage;
         return this;
     }
-
+    public void updateCount(int scrapCount) {
+        this.scrapCount = scrapCount;
+    }
 }
