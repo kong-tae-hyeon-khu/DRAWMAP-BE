@@ -4,6 +4,7 @@ import com.umc.drawmap.domain.Challenge;
 import com.umc.drawmap.domain.User;
 import com.umc.drawmap.domain.UserChallenge;
 import com.umc.drawmap.dto.challenge.ChallengeReqDto;
+import com.umc.drawmap.exception.NotFoundException;
 import com.umc.drawmap.repository.ChallengeRepository;
 import com.umc.drawmap.repository.UserChallengeRepository;
 import com.umc.drawmap.repository.UserRepository;
@@ -44,7 +45,8 @@ public class ChallengeService {
     }
     @Transactional
     public Challenge update(Long challengeId,List<MultipartFile> files, ChallengeReqDto.UpdateChallengeDto request) throws IOException{
-        Challenge challenge = challengeRepository.findById(challengeId).get();
+        Challenge challenge = challengeRepository.findById(challengeId)
+                .orElseThrow(() -> new NotFoundException("도전코스를 찾을 수 없습니다."));
         challenge.update(request.getChallengeCourseTitle(), request.getChallengeCourseArea(), request.getChallengeCourseDifficulty(), request.getChallengeCourseContent(), FileService.fileUpload(files));
         return challenge;
     }
@@ -59,7 +61,8 @@ public class ChallengeService {
 
     public List<Challenge> findAllByUser(Long userId){
 
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다."));
         List<UserChallenge> userChallengeList = userChallengeRepository.findAllByUser(user);
         List<Challenge> list = new ArrayList<>();
         for (UserChallenge userchallenge: userChallengeList){
