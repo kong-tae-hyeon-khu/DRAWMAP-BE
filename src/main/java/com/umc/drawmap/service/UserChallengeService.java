@@ -2,7 +2,10 @@ package com.umc.drawmap.service;
 import com.umc.drawmap.domain.Challenge;
 import com.umc.drawmap.domain.User;
 import com.umc.drawmap.domain.UserChallenge;
+import com.umc.drawmap.dto.scrap.ScrapResDto;
 import com.umc.drawmap.dto.userChallenge.UserChallengeReqDto;
+import com.umc.drawmap.dto.userChallenge.UserChallengeResDto;
+import com.umc.drawmap.exception.userChallenge.DuplicateUserChallengeException;
 import com.umc.drawmap.exception.userChallenge.NoExistChallengeException;
 import com.umc.drawmap.exception.userChallenge.NoExistUserException;
 import com.umc.drawmap.repository.ChallengeRepository;
@@ -10,6 +13,7 @@ import com.umc.drawmap.repository.UserChallengeRepository;
 import com.umc.drawmap.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,17 +28,16 @@ public class UserChallengeService {
         this.challengeRepository = challengeRepository;
         this.userRepository = userRepository;
     }
-    // 유저 도전 추가!
-    public Boolean userChallengeAdd(UserChallengeReqDto.UserChallengeAddDto dto) {
+    // 유저 도전 등록(인증)
+    public UserChallengeResDto.GetUserChallenge userChallengeAdd(UserChallengeReqDto.UserChallengeAddDto dto) {
 
+        // 파라미터 검증
         if (dto.getUserId() == null) {
             throw new IllegalArgumentException("User ID cannot be null");
         }
         if (dto.getChallengeId() == null) {
             throw new IllegalArgumentException("Challenge ID cannot be null");
         }
-
-
 
         Optional<User> userOptional = userRepository.findById(dto.getUserId());
         Optional<Challenge> challengeOptional = challengeRepository.findById(dto.getChallengeId());
@@ -47,9 +50,16 @@ public class UserChallengeService {
             throw new NoExistUserException("Please Check Challenge Id");
         }
 
+
+
         User user = userOptional.get();
         Challenge challenge = challengeOptional.get();
 
+        if (userChallengeRepository.findUserChallengeByUserAndChallenge(user, challenge).isPresent()) {
+            throw new DuplicateUserChallengeException("이미 도전 인증을 하였습니다.");
+        }
+
+        // DB 저장.
         UserChallenge userChallenge = UserChallenge.builder()
                 .challengeComment(dto.getChallengeComment())
                 .challenge(challenge)
@@ -57,12 +67,22 @@ public class UserChallengeService {
                 .challengeStar(dto.getChallengeStar())
                 .challengeImage(dto.getChallengeImage())
                 .build();
-
         userChallengeRepository.save(userChallenge);
-        return true;
+
+        // Response DTO 생성.
+        UserChallengeResDto.GetUserChallenge resDto = UserChallengeResDto.GetUserChallenge.builder()
+                .userId(user.getId())  // 유저 이름으로 변경가능.
+                .challengeId(challenge.getId()) // 도전 이름으로 변경가능.
+                .challengeComment(dto.getChallengeComment())
+                .challengeStar(dto.getChallengeStar())
+                .challengeImage(dto.getChallengeImage())
+                .build();
+
+        return resDto;
     }
     // 유저 도전 수정!
-    public Boolean userChallengeUpdate(Long userId, Long challengeId ,UserChallengeReqDto.UserChallengeUpdateDto dto) {
+    public UserChallengeResDto.GetUserChallenge userChallengeUpdate(Long userId, Long challengeId ,UserChallengeReqDto.UserChallengeUpdateDto dto) {
+
         Optional<User> userOptional = userRepository.findById(userId);
         Optional<Challenge> challengeOptional = challengeRepository.findById(challengeId);
 
@@ -85,15 +105,47 @@ public class UserChallengeService {
 
         UserChallenge userChallenge = userChallengeOptional.get();
         userChallenge.update(dto.getChallengeComment(), dto.getChallengeStar(), dto.getChallengeImage());
-
         userChallengeRepository.save(userChallenge);
-        return true;
+
+        UserChallengeResDto.GetUserChallenge resDto = UserChallengeResDto.GetUserChallenge.builder()
+                .userId(userId)
+                .challengeId(challengeId)
+                .challengeComment(dto.getChallengeComment())
+                .challengeImage(dto.getChallengeImage())
+                .challengeStar(dto.getChallengeStar())
+                .build();
+
+        return resDto;
     }
-    // 유저 도전 조회
+    // 유저 전체 도전 조회
     public List<UserChallenge> userChallengeList() {
         return userChallengeRepository.findAll();
     }
 
+    // 특정 유저 도전 조회
+    public List<UserChallengeResDto.GetUserChallenge> aUserChallengeList(Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (!userOptional.isPresent()) {
+            throw new NoExistUserException("해당 유저가 존재하지 않습니다.");
+        }
+
+        User user = userOptional.get();
+
+        List<UserChallengeResDto.GetUserChallenge> getUserChallengeArrayList = new ArrayList<>();
+        List<UserChallenge> userChallengeList = userChallengeRepository.findAllByUser(user);
+        for (UserChallenge userChallenge : userChallengeList) {
+            UserChallengeResDto.GetUserChallenge dto = UserChallengeResDto.GetUserChallenge.builder()
+                    .challengeStar(userChallenge.getChallengeStar())
+                    .challengeImage(userChallenge.getChallengeImage())
+                    .userId(userChallenge.getUser().getId())
+                    .challengeComment(userChallenge.getChallengeComment())
+                    .challengeId(userChallenge.getChallenge().getId())
+                    .build();
+
+            getUserChallengeArrayList.add(dto);
+        }
+        return getUserChallengeArrayList;
+    }
     // 유저 도전 삭제.
     public Boolean userChallengeDelete(Long userId, Long courseId) {
         Optional<User> userOptional = userRepository.findById(userId);

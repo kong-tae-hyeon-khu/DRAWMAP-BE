@@ -14,7 +14,7 @@ import javax.persistence.*;
 public class UserChallenge extends BaseEntity{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // DB와 동일한 생성법을 취하는 것으로, Auto Increment 를 걸어주던가 해야 자동생성.
     @Column(name = "user_challenge_id")
     private Long id;
 
