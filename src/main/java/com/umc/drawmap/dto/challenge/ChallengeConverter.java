@@ -23,7 +23,7 @@ public class ChallengeConverter {
     public static ChallengeResDto.ChallengeDto toChallengeDto(Challenge challenge){
 
         UserChallenge userChallenge = userChallengeRepository.findUserChallengeByChallenge(challenge);
-        User user = userRepository.findUserByUserChallenge(userChallenge);
+        User user = userChallenge.getUser();
         Boolean isScraped = scrapService.findScrapByUserAndChallenge(user, challenge);
 
         return ChallengeResDto.ChallengeDto.builder()
@@ -46,15 +46,9 @@ public class ChallengeConverter {
                 .collect(Collectors.toList());
     }
 
-    public static ChallengeResDto.ChallengeListDto toChallengeListDto(List<Challenge> challengeList){
-        return ChallengeResDto.ChallengeListDto.builder()
-                .challengeList(toChallengeDtoList(challengeList))
-                .build();
-    }
-
     public static ChallengeResDto.MyChallengeDto toMyChallengeDto(Challenge challenge){
         UserChallenge userChallenge = userChallengeRepository.findUserChallengeByChallenge(challenge);
-        User user = userRepository.findUserByUserChallenge(userChallenge);
+        User user = userChallenge.getUser();
 
         return ChallengeResDto.MyChallengeDto.builder()
                 .challengeId(challenge.getId())
@@ -69,12 +63,6 @@ public class ChallengeConverter {
         return challengeList.stream()
                 .map(challenge -> toMyChallengeDto(challenge))
                 .collect(Collectors.toList());
-    }
-
-    public static ChallengeResDto.MyChallengeListDto toChallengeMyListDto(List<Challenge> challengeList){
-        return ChallengeResDto.MyChallengeListDto.builder()
-                .ChallengeList(toChallengeDtoMyList(challengeList))
-                .build();
     }
 
 
