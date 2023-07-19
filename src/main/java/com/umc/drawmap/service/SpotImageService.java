@@ -19,8 +19,8 @@ public class SpotImageService {
     private final ChallengeRepository challengeRepository;
 
     @Transactional
-    public SpotImage create(MultipartFile file, SpotImageReqDto.CreateSpotImageDto request, Long challengeId) throws IOException{
-        Challenge challenge = challengeRepository.findById(challengeId).get();
+    public SpotImage create(MultipartFile file, SpotImageReqDto.CreateSpotImageDto request) throws IOException{
+        Challenge challenge = challengeRepository.findById(request.getChallengeId()).get();
         SpotImage spotImage = SpotImage.builder()
                 .spotTitle(request.getTitle())
                 .spotArea(request.getArea())

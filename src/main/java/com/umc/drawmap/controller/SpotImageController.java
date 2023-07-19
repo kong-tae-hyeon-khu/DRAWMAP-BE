@@ -18,12 +18,11 @@ public class SpotImageController {
 
     private final SpotImageService spotImageService;
 
-    @PostMapping("/spot/{challengeId}")
-    public BaseResponse<String> createSpotImage(@PathVariable(value = "challengeId")Long challengeId,
-                                                @RequestPart(value = "file", required = false) MultipartFile file,
+    @PostMapping("/spot")
+    public BaseResponse<String> createSpotImage(@RequestPart(value = "file", required = false) MultipartFile file,
                                                 @ModelAttribute(value = "request")SpotImageReqDto.CreateSpotImageDto request) throws IOException{
 
-        SpotImage spotImage = spotImageService.create(file, request, challengeId);
+        SpotImage spotImage = spotImageService.create(file, request);
         return new BaseResponse<>("새로운 관광지 등록 완료");
 
     }
