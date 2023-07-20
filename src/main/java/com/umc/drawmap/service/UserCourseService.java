@@ -39,4 +39,14 @@ public class UserCourseService {
                 FileService.fileUpload(files));
         return userCourse;
     }
+
+    public void delete(Long ucourseId){
+        userCourseRepository.deleteById(ucourseId);
+    }
+
+    // 유저 도전 조회
+    public List<UserCourse> userCourseList() {
+        return userCourseRepository.findAll();
+    }
+
 }

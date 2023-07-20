@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class UserCourse extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_course_id")
     private Long id;
 
@@ -54,5 +54,9 @@ public class UserCourse extends BaseEntity {
         this.userCourseContent = userCourseContent;
         this.files = files;
         return this;
+    }
+
+    public void updateCount(int scrapCount) {
+        this.scrapCount = scrapCount;
     }
 }

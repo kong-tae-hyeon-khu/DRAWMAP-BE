@@ -1,9 +1,10 @@
 package com.umc.drawmap.domain;
 
-import com.umc.drawmap.dto.ChallengeReqDto;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -14,7 +15,7 @@ import javax.persistence.*;
 public class Challenge extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "challenge_course_id")
     private Long id;
 
@@ -37,7 +38,10 @@ public class Challenge extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
-    private User user;
+    private UserChallenge userChallenge;
+
+    @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL)
+    private List<SpotImage> spotImages = new ArrayList<>();
 
     public Challenge update(String challengeCourseTitle, String challengeCourseArea, String challengeCourseDifficulty, String challengeCourseContent, String challengeImage){
         this.challengeCourseTitle=challengeCourseTitle;
@@ -47,5 +51,7 @@ public class Challenge extends BaseEntity {
         this.challengeImage=challengeImage;
         return this;
     }
-
+    public void updateCount(int scrapCount) {
+        this.scrapCount = scrapCount;
+    }
 }
