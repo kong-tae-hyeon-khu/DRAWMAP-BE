@@ -118,8 +118,22 @@ public class UserChallengeService {
         return resDto;
     }
     // 유저 전체 도전 조회
-    public List<UserChallenge> userChallengeList() {
-        return userChallengeRepository.findAll();
+    public List<UserChallengeResDto.GetUserChallenge> userChallengeList() {
+
+        List<UserChallenge> userChallengeList = userChallengeRepository.findAll();
+        List<UserChallengeResDto.GetUserChallenge> getUserChallengeList = new ArrayList<>();
+        for (UserChallenge userChallenge : userChallengeList) {
+            UserChallengeResDto.GetUserChallenge dto = UserChallengeResDto.GetUserChallenge.builder()
+                    .challengeId(userChallenge.getChallenge().getId())
+                    .challengeComment(userChallenge.getChallengeComment())
+                    .userId(userChallenge.getUser().getId())
+                    .challengeImage(userChallenge.getChallengeImage())
+                    .challengeStar(userChallenge.getChallengeStar())
+                    .build();
+
+            getUserChallengeList.add(dto);
+        }
+        return getUserChallengeList;
     }
 
     // 특정 유저 도전 조회

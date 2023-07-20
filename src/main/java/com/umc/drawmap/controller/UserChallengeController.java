@@ -28,9 +28,9 @@ public class UserChallengeController {
         return new BaseResponse<>(userChallengeService.userChallengeUpdate(userId, courseId, dto));
 
     }
-    // 모든 유저들의 도전 리스트 조회.
+    // 모든 유저들의 도전 리스트 조회. -
     @GetMapping(path = "/challenge/cert")
-    public BaseResponse<List<UserChallenge>> userChallengeList() {
+    public BaseResponse<List<UserChallengeResDto.GetUserChallenge>> userChallengeList() {
         return new BaseResponse<>(userChallengeService.userChallengeList());
     }
 
