@@ -103,6 +103,9 @@ public class ScrapService {
     public ScrapResDto.ScrapListDto getMyScrap(Long userId) {
 
         Optional<User> user = userRepository.findById(userId);
+        if (!user.isPresent()) {
+            throw new NoExistUserOrCourseException("해당 유저가 존재하지 않습니다.");
+        }
         List<Scrap> scrapList = scrapRepository.findAllByUser(user.get());
 
         List<ScrapResDto.BaseDto> baseDtoList = new ArrayList<>();

@@ -1,14 +1,11 @@
 package com.umc.drawmap.controller;
 
-import com.umc.drawmap.domain.Scrap;
 import com.umc.drawmap.dto.scrap.ScrapReqDto;
 import com.umc.drawmap.dto.scrap.ScrapResDto;
 import com.umc.drawmap.exception.BaseResponse;
 import com.umc.drawmap.service.ScrapService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 public class ScrapController {

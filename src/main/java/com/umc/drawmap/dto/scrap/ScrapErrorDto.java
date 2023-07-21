@@ -5,4 +5,5 @@ public class ScrapErrorDto {
     public ScrapErrorDto(String msg) {
         this.msg = msg;
     }
+    public String getMessage() {return this.msg;}
 }
