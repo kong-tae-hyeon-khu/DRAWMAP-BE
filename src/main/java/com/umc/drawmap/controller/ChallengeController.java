@@ -27,23 +27,23 @@ public class ChallengeController {
 
     // 도전코스 상세페이지 조회
     @GetMapping("/{courseId}")
-    public ResponseEntity<ChallengeResDto.ChallengeDto> getChallenge(@PathVariable(name = "courseId")Long courseId){
+    public BaseResponse<ChallengeResDto.ChallengeDto> getChallenge(@PathVariable(name = "courseId")Long courseId){
         Challenge challenge = challengeService.findById(courseId);
-        return ResponseEntity.ok(ChallengeConverter.toChallengeDto(challenge));
+        return new BaseResponse<>(ChallengeConverter.toChallengeDto(challenge));
     }
 
     // 도전코스 전체 리스트 조회 3개씩
     @GetMapping("/courses")
-    public ResponseEntity<ChallengeResDto.ChallengeListDto> getChallengeList(){
+    public BaseResponse<List<ChallengeResDto.ChallengeDto>> getChallengeList(){
         List<Challenge> challengeList = challengeService.findAll();
-        return ResponseEntity.ok(ChallengeConverter.toChallengeListDto(challengeList));
+        return new BaseResponse<>(ChallengeConverter.toChallengeDtoList(challengeList));
     }
 
     // 도전코스 본인 리스트 조회 (참여한 이달의 도전코스) 6개씩
     @GetMapping("/{userId}/courses")
-    public ResponseEntity<ChallengeResDto.MyChallengeListDto> getChallengeMyList(@PathVariable(name = "userId")Long userId){
+    public BaseResponse<List<ChallengeResDto.MyChallengeDto>> getChallengeMyList(@PathVariable(name = "userId")Long userId){
         List<Challenge> challengeMyList = challengeService.findAllByUser(userId);
-        return ResponseEntity.ok(ChallengeConverter.toChallengeMyListDto(challengeMyList));
+        return new BaseResponse<>(ChallengeConverter.toChallengeDtoMyList(challengeMyList));
     }
 
 

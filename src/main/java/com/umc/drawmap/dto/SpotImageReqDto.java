@@ -1,5 +1,6 @@
 package com.umc.drawmap.dto;
 
+import com.sun.istack.NotNull;
 import lombok.*;
 
 public class SpotImageReqDto {
@@ -11,8 +12,13 @@ public class SpotImageReqDto {
     @Setter
     public static class CreateSpotImageDto{
 
+        @NotNull
+        private Long challengeId;
+        @NotNull
         private String title;
+        @NotNull
         private String content;
+        @NotNull
         private String area;
     }
 
