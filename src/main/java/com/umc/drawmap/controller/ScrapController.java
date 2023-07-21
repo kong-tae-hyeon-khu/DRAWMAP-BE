@@ -3,6 +3,7 @@ package com.umc.drawmap.controller;
 import com.umc.drawmap.domain.Scrap;
 import com.umc.drawmap.dto.scrap.ScrapReqDto;
 import com.umc.drawmap.dto.scrap.ScrapResDto;
+import com.umc.drawmap.exception.BaseResponse;
 import com.umc.drawmap.service.ScrapService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,20 +16,23 @@ public class ScrapController {
     public ScrapController(ScrapService scrapService) {
         this.scrapService = scrapService;
     }
-    @PostMapping("/scrap")
-    public String addScrap(@RequestBody ScrapReqDto.ScrapAddDto dto) {
-        if (dto.getChallenge_id() == null) {
-            return scrapService.addUserCourseScrap(dto);
-        }
 
-        return scrapService.addChallengeScrap(dto);
+
+    @PostMapping("/scrap")
+    public BaseResponse<ScrapResDto.ScrapDto> addScrap(@RequestBody ScrapReqDto.ScrapAddDto dto) {
+        if (dto.getChallenge_id() == null) {
+            return new BaseResponse<>(scrapService.addUserCourseScrap(dto));
+        }
+        return new BaseResponse<>(scrapService.addChallengeScrap(dto));
     }
+
+
     @GetMapping("/scrap/{userId}")
-    public ResponseEntity<List<ScrapResDto.ScrapDto>>  getScrap(@PathVariable Long userId) {
-        return scrapService.getMyScrap(userId);
+    public BaseResponse<ScrapResDto.ScrapListDto> getScrap(@PathVariable Long userId) {
+        return new BaseResponse<>(scrapService.getMyScrap(userId));
     }
-    @DeleteMapping("/scrap/{userId}")
-    public String deleteCourseScrap(@PathVariable Long userId, Long courseId, Long challengeId) {
-        return scrapService.deleteMyScrap(userId, courseId, challengeId);
+    @DeleteMapping("/scrap/{userId}")  // 쿼리 스트링으로 유저코스 또는 도전코스를 입력받아야한다.
+    public BaseResponse<ScrapResDto.ScrapDto> deleteCourseScrap(@PathVariable Long userId, Long courseId, Long challengeId) {
+        return new BaseResponse<>(scrapService.deleteMyScrap(userId, courseId, challengeId));
     }
 }

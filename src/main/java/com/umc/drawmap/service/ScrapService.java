@@ -6,17 +6,17 @@ import com.umc.drawmap.domain.User;
 import com.umc.drawmap.domain.UserCourse;
 import com.umc.drawmap.dto.scrap.ScrapReqDto;
 import com.umc.drawmap.dto.scrap.ScrapResDto;
+import com.umc.drawmap.exception.scrap.DupScrapException;
+import com.umc.drawmap.exception.scrap.NoExistScrapException;
+import com.umc.drawmap.exception.scrap.NoExistUserOrCourseException;
 import com.umc.drawmap.repository.ChallengeRepository;
 import com.umc.drawmap.repository.ScrapRepository;
 import com.umc.drawmap.repository.UserCourseRepository;
 import com.umc.drawmap.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,18 +34,18 @@ public class ScrapService {
     }
 
     // User - Scrap
-    public String addUserCourseScrap(ScrapReqDto.ScrapAddDto dto) {
+    public ScrapResDto.ScrapDto addUserCourseScrap(ScrapReqDto.ScrapAddDto dto) {
         Optional<User> userOptional = userRepository.findById(dto.getUser_id());
         Optional<UserCourse> userCourseOptional = userCourseRepository.findById(dto.getUser_course_id());
 
         if (!userOptional.isPresent() || !userCourseOptional.isPresent()) {
-            return "해당 유저 또는 코스가 존재하지 않습니다.";
+            throw new NoExistUserOrCourseException("유저 또는 코스의 아이디가 존재하지 않습니다.");
         }
         User user = userOptional.get();
         UserCourse userCourse = userCourseOptional.get();
 
         if (scrapRepository.findByUserAndUserCourse(user, userCourse).isPresent()) {
-            return "이미 스크랩을 하셨습니다.";
+            throw new DupScrapException("이미 해당 코스에 대해서 스크랩을 하셨습니다.");
         }
         Scrap scrap = Scrap.builder()
                 .user(user)
@@ -54,17 +54,23 @@ public class ScrapService {
         userCourse.updateCount(userCourse.getScrapCount() + 1);
         scrapRepository.save(scrap);
         userCourseRepository.save(userCourse);
+        ScrapResDto.ScrapDto resDto = ScrapResDto.ScrapDto.builder()
+                .user_courseId(dto.getUser_course_id())
+                .userId(dto.getUser_id())
+                .message("스크랩 성공")
+                .build();
 
-        return "스크랩 성공";
+        return resDto;
+
 
     }
 
-    public String addChallengeScrap(ScrapReqDto.ScrapAddDto dto) {
+    public ScrapResDto.ScrapDto addChallengeScrap(ScrapReqDto.ScrapAddDto dto) {
         Optional<User> userOptional = userRepository.findById(dto.getUser_id());
         Optional<Challenge> challengeOptional = challengeRepository.findById(dto.getChallenge_id());
 
         if (!userOptional.isPresent() || !challengeOptional.isPresent()) {
-            return "해당 유저 또는 코스가 존재하지 않습니다.";
+            throw new NoExistUserOrCourseException("해당 유저 또는 코스의 아이디가 존재하지 않습니다.");
         }
 
 
@@ -72,7 +78,7 @@ public class ScrapService {
         Challenge challenge = challengeOptional.get();
 
         if (scrapRepository.findByUserAndChallenge(user, challenge).isPresent()) {
-            return "이미 스크랩을 하셨습니다.";
+            throw new DupScrapException("이미 해당 코스에 대해서 스크랩을 하셨습니다.");
         }
 
         Scrap scrap = Scrap.builder()
@@ -83,70 +89,97 @@ public class ScrapService {
         challenge.updateCount(challenge.getScrapCount() + 1);
         scrapRepository.save(scrap);
         challengeRepository.save(challenge);
-        return "스크랩 성공";
+
+        ScrapResDto.ScrapDto resDto = ScrapResDto.ScrapDto.builder()
+                .userId(dto.getUser_id())
+                .challengeId(dto.getChallenge_id())
+                .message("스크랩 성공")
+                .build();
+
+        return resDto;
     }
 
 
-    public ResponseEntity<List<ScrapResDto.ScrapDto>> getMyScrap(Long userId) {
+    public ScrapResDto.ScrapListDto getMyScrap(Long userId) {
 
         Optional<User> user = userRepository.findById(userId);
         List<Scrap> scrapList = scrapRepository.findAllByUser(user.get());
 
-        List<ScrapResDto.ScrapDto> scrapDtoList = new ArrayList<>();
+        List<ScrapResDto.BaseDto> baseDtoList = new ArrayList<>();
 
         for (Scrap scrap : scrapList) {
-            ScrapResDto.ScrapDto scrapDto;
+            ScrapResDto.BaseDto scrapDto;
             if (scrap.getChallenge() == null) {
-                scrapDto = ScrapResDto.ScrapDto.builder()
+                scrapDto = ScrapResDto.BaseDto.builder()
                         .user_courseId(scrap.getUserCourse().getId())
+                        .userId(userId)
                         .build();
+
+                baseDtoList.add(scrapDto);
             }
             else {
-                scrapDto = ScrapResDto.ScrapDto.builder()
+                scrapDto = ScrapResDto.BaseDto.builder()
+                        .userId(userId)
                         .challengeId(scrap.getChallenge().getId())
                         .build();
-            }
-            scrapDtoList.add(scrapDto);
-        }
 
-        return ResponseEntity.ok(scrapDtoList);
+                baseDtoList.add(scrapDto);
+            }
+        }
+        ScrapResDto.ScrapListDto resDto = ScrapResDto.ScrapListDto.builder()
+                .baseDtoList(baseDtoList)
+                .message("내가 스크랩한 코스 목록")
+                .build();
+        return resDto;
+
     }
 
-    public String deleteMyScrap(Long userId, Long courseId, Long challengeId) {
+    public ScrapResDto.ScrapDto deleteMyScrap(Long userId, Long courseId, Long challengeId) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (courseId == null) {
             Optional<Challenge> challengeOptional = challengeRepository.findById(challengeId);
 
             if (!userOptional.isPresent() || !challengeOptional.isPresent()) {
-                return "유저 아이디 또는 도전 코스의 아이디를 확인해주세요.";
+                throw new NoExistUserOrCourseException("해당 유저 또는 코스의 아이디가 존재하지 않습니다.");
             }
             User user = userOptional.get();
             Challenge challenge = challengeOptional.get();
             Optional<Scrap> scrapOptional = scrapRepository.findByUserAndChallenge(user, challenge);
             if (!scrapOptional.isPresent()) {
-                return "해당 스크랩이 존재하지 않습니다.";
+                throw new NoExistScrapException();
             }
             Scrap scrap = scrapOptional.get();
             challenge.updateCount(challenge.getScrapCount() - 1);
             challengeRepository.save(challenge);
             scrapRepository.delete(scrap);
-            return "스크랩 삭제 완료";
+            ScrapResDto.ScrapDto scrapDto = ScrapResDto.ScrapDto.builder()
+                    .challengeId(challengeId)
+                    .userId(userId)
+                    .message("스크랩 삭제 성공")
+                    .build();
+            return scrapDto;
+
         } else {
             Optional<UserCourse> userCourseOptional = userCourseRepository.findById(courseId);
             if (!userOptional.isPresent() || !userCourseOptional.isPresent()) {
-                return "유저 아이디 또는 유저 코스의 아이디를 확인해주세요";
+                throw new NoExistUserOrCourseException("해당 유저 또는 코스의 아이디가 존재하지 않습니다.");
             }
             User user = userOptional.get();
             UserCourse userCourse = userCourseOptional.get();
             Optional<Scrap> scrapOptional = scrapRepository.findByUserAndUserCourse(user, userCourse);
             if (!scrapOptional.isPresent()) {
-                return "해당 스크랩이 존재하지 않습니다";
+                throw new NoExistScrapException();
             }
             Scrap scrap = scrapOptional.get();
             userCourse.updateCount(userCourse.getScrapCount() - 1);
             userCourseRepository.save(userCourse);
             scrapRepository.delete(scrap);
-            return "스크랩 삭제 완료";
+            ScrapResDto.ScrapDto scrapDto = ScrapResDto.ScrapDto.builder()
+                    .user_courseId(courseId)
+                    .userId(userId)
+                    .message("스크랩 삭제 성공")
+                    .build();
+            return scrapDto;
         }
     }
 }
