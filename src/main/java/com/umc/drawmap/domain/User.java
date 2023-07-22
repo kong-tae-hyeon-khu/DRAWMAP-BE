@@ -48,7 +48,6 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Scrap> scraps = new ArrayList<>();
 
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserCourse> userCourses = new ArrayList<>();
 

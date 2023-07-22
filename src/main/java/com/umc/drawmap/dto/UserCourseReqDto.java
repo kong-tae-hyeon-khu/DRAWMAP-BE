@@ -14,6 +14,8 @@ public class UserCourseReqDto {
         private String userCourseArea;
         private String userCourseDifficulty;
         private String userCourseContent;
+
+        private Long userId;
     }
 
     @Builder
