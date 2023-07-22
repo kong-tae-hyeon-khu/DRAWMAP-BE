@@ -5,6 +5,8 @@ import com.umc.drawmap.dto.UserCourseReqDto;
 import com.umc.drawmap.repository.UserCourseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,6 +49,18 @@ public class UserCourseService {
     // 유저 도전 조회
     public List<UserCourse> userCourseList() {
         return userCourseRepository.findAll();
+    }
+
+    public List<UserCourse> getPage(int page, int size){
+        PageRequest pageRequest = PageRequest.of(page,size);
+        Page<UserCourse> fetchPages = userCourseRepository.findAllOrderByCreatedAtDesc(pageRequest);
+        return fetchPages.getContent();
+    }
+
+    public List<UserCourse> getPageByScrap(int page, int size){
+        PageRequest pageRequest = PageRequest.of(page,size);
+        Page<UserCourse> fetchPages = userCourseRepository.findAllOrderByScrapCountDesc(pageRequest);
+        return fetchPages.getContent();
     }
 
 }
