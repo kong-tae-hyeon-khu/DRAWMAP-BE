@@ -185,4 +185,8 @@ public class ScrapService {
             return scrapDto;
         }
     }
+
+    public Boolean findScrapByUserAndUserCourse(User user, UserCourse userCourse){
+        return scrapRepository.existsScrapByUserAndUserCourse(user, userCourse);
+    }
 }

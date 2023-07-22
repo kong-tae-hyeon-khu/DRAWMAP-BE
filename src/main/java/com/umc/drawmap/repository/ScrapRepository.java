@@ -16,4 +16,6 @@ public interface ScrapRepository extends JpaRepository<Scrap, Long>{
     Optional<Scrap> findByUserAndUserCourse(User user, UserCourse userCourse);
 
     List<Scrap> findAllByUser(User user);
+
+    Boolean existsScrapByUserAndUserCourse(User user, UserCourse userCourse);
 }
