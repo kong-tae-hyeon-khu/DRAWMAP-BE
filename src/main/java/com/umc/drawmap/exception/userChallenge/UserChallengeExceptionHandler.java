@@ -24,4 +24,11 @@ public class UserChallengeExceptionHandler {
         return new UserChallengeErrorDto(ex.getMessage());
     }
 
+    @ExceptionHandler
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST) // 이미 해당 유저가 도전 인증을 완료하였을 때 발생하는 에러.
+    public UserChallengeErrorDto handleDuplicateUserChallengeException(DuplicateUserChallengeException ex) {
+        return new UserChallengeErrorDto(ex.getMessage());
+    }
+
 }

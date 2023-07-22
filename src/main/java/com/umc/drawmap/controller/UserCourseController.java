@@ -45,6 +45,21 @@ public class UserCourseController {
         return userCourseService.userCourseList();
     }
 
+    // 본인 리스트 조회
+    @GetMapping("usercourse/{userId}/courses")
+    public BaseResponse<List<UserCourseResDto.MyUserCourseDto>> getUserCourseMyList(@PathVariable(name = "userId")Long userId){
+        List<UserCourse> userCourseMyList = userCourseService.findAllByUser(userId);
+        return new BaseResponse<>(UserCourseConverter.toUserCourseDtoMyList(userCourseMyList));
+    }
+
+    // 페이지 조회
+    @GetMapping("usercourse/{ucourseId}")
+    public BaseResponse<UserCourseResDto.UserCourseDto> getUserCourse(@PathVariable(name = "ucourseId")Long ucourseId){
+        UserCourse userCourse = userCourseService.findById(ucourseId);
+        return new BaseResponse<>(UserCourseConverter.toUserCourseDto(userCourse));
+    }
+
+
     // 삭제
     @DeleteMapping("/usercourse/{ucourseId}")
     public BaseResponse<String> deleteUserCourse(@PathVariable(name = "ucourseId")Long ucourseId){
