@@ -1,6 +1,8 @@
 package com.umc.drawmap.controller;
 
+import com.umc.drawmap.dto.UserCourseConverter;
 import com.umc.drawmap.dto.UserCourseReqDto;
+import com.umc.drawmap.dto.UserCourseResDto;
 import com.umc.drawmap.exception.BaseResponse;
 import com.umc.drawmap.service.UserCourseService;
 import com.umc.drawmap.domain.UserCourse;
@@ -44,9 +46,25 @@ public class UserCourseController {
     }
 
     // 삭제
-    @DeleteMapping("usercourse/{ucourseId}")
+    @DeleteMapping("/usercourse/{ucourseId}")
     public BaseResponse<String> deleteUserCourse(@PathVariable(name = "ucourseId")Long ucourseId){
         userCourseService.delete(ucourseId);
         return new BaseResponse<>("유저코스 삭제 완료");
     }
+
+
+    // 유저개발코스 정렬(최신순)
+    @GetMapping("/usercourse/list")
+    public BaseResponse<List<UserCourseResDto.UserCourseSortDto>> getList(@RequestParam(name = "page")int page, @RequestParam(name = "size")int size){
+        List<UserCourse> userCourseList = userCourseService.getPage(page, size);
+        return new BaseResponse<>(UserCourseConverter.toUserCourseSortDto(userCourseList));
+    }
+
+    // 유저개발코스 정렬(인기순)
+    @GetMapping("/usercourse/scraplist")
+    public BaseResponse<List<UserCourseResDto.UserCourseSortDto>> getListByScrap(@RequestParam(name = "page")int page, @RequestParam(name = "size")int size){
+        List<UserCourse> userCourseList = userCourseService.getPageByScrap(page, size);
+        return new BaseResponse<>(UserCourseConverter.toUserCourseSortDto(userCourseList));
+    }
+
 }
