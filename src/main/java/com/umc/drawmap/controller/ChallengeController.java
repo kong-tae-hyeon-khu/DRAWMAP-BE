@@ -1,6 +1,5 @@
 package com.umc.drawmap.controller;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
 import com.umc.drawmap.domain.Challenge;
 import com.umc.drawmap.dto.challenge.ChallengeConverter;
 import com.umc.drawmap.dto.challenge.ChallengeReqDto;
@@ -9,8 +8,6 @@ import com.umc.drawmap.exception.BaseResponse;
 import com.umc.drawmap.service.ChallengeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
