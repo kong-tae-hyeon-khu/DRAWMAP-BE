@@ -1,7 +1,7 @@
 package com.umc.drawmap.controller;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
 import com.umc.drawmap.domain.Challenge;
+import com.umc.drawmap.domain.Region;
 import com.umc.drawmap.dto.challenge.ChallengeConverter;
 import com.umc.drawmap.dto.challenge.ChallengeReqDto;
 import com.umc.drawmap.dto.challenge.ChallengeResDto;
@@ -10,7 +10,6 @@ import com.umc.drawmap.service.ChallengeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,6 +45,28 @@ public class ChallengeController {
         return new BaseResponse<>(ChallengeConverter.toChallengeDtoMyList(challengeMyList));
     }
 
+    // 도전코스 정렬 (최신순) 도전코스 6개씩
+    // 페이지 0부터 시작 -> ex) 6개씩 있는 2페이지 조회 PageRequest.of((page)1,(size)5)
+    @GetMapping("/list")
+    public BaseResponse<Page<ChallengeResDto.ChallengeSortDto>> getChallengeListByCreatedAt(@RequestParam(name = "page")int page){
+        Page<Challenge> challengeList = challengeService.getPage(page);
+        return new BaseResponse<>(ChallengeConverter.toChallengeSortList(challengeList));
+    }
+
+    // 도전코스 정렬 (인기순)
+    @GetMapping("/likelist")
+    public BaseResponse<Page<ChallengeResDto.ChallengeSortDto>> getChallengeListByScrap(@RequestParam(name = "page")int page){
+        Page<Challenge> challengeList = challengeService.getPageByScrap(page);
+        return new BaseResponse<>(ChallengeConverter.toChallengeSortList(challengeList));
+    }
+
+    // 도전코스 정렬 (지역별)
+    @GetMapping("/arealist")
+    public BaseResponse<Page<ChallengeResDto.ChallengeSortDto>> getChallengeListByArea(@RequestParam(name = "page")int page, @RequestParam(name = "area") Region area){
+        Page<Challenge> challengeList = challengeService.getPageByArea(page, area);
+        return new BaseResponse<>(ChallengeConverter.toChallengeSortList(challengeList));
+    }
+
 
     @PostMapping("/course")
     public BaseResponse<String> createChallenge(@RequestPart(value = "files", required = false) List<MultipartFile> files,
@@ -68,4 +89,6 @@ public class ChallengeController {
         challengeService.delete(courseId);
         return new BaseResponse<>("도전코스 삭제 완료");
     }
+
+
 }

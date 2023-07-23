@@ -1,13 +1,18 @@
 package com.umc.drawmap.controller;
 
+import com.umc.drawmap.domain.Challenge;
+import com.umc.drawmap.domain.Region;
 import com.umc.drawmap.dto.UserCourseConverter;
 import com.umc.drawmap.dto.UserCourseReqDto;
 import com.umc.drawmap.dto.UserCourseResDto;
+import com.umc.drawmap.dto.challenge.ChallengeConverter;
+import com.umc.drawmap.dto.challenge.ChallengeResDto;
 import com.umc.drawmap.exception.BaseResponse;
 import com.umc.drawmap.service.UserCourseService;
 import com.umc.drawmap.domain.UserCourse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -67,19 +72,26 @@ public class UserCourseController {
         return new BaseResponse<>("유저코스 삭제 완료");
     }
 
-
-    // 유저개발코스 정렬(최신순)
-    @GetMapping("/usercourse/list")
-    public BaseResponse<List<UserCourseResDto.UserCourseSortDto>> getList(@RequestParam(name = "page")int page, @RequestParam(name = "size")int size){
-        List<UserCourse> userCourseList = userCourseService.getPage(page, size);
-        return new BaseResponse<>(UserCourseConverter.toUserCourseSortDto(userCourseList));
+    // 유저코스 정렬 (최신순) 유저코스 10개씩
+    // 페이지 0부터 시작 -> ex) 10개씩 있는 2페이지 조회 PageRequest.of((page)1,(size)10)
+    @GetMapping("usercourse/list")
+    public BaseResponse<Page<UserCourseResDto.UserCourseSortDto>> getChallengeListByCreatedAt(@RequestParam(name = "page")int page){
+        Page<UserCourse> userCourseList = userCourseService.getPage(page);
+        return new BaseResponse<>(UserCourseConverter.toUserCourseSortList(userCourseList));
     }
 
-    // 유저개발코스 정렬(인기순)
-    @GetMapping("/usercourse/scraplist")
-    public BaseResponse<List<UserCourseResDto.UserCourseSortDto>> getListByScrap(@RequestParam(name = "page")int page, @RequestParam(name = "size")int size){
-        List<UserCourse> userCourseList = userCourseService.getPageByScrap(page, size);
-        return new BaseResponse<>(UserCourseConverter.toUserCourseSortDto(userCourseList));
+    // 유저코스 정렬 (인기순)
+    @GetMapping("usercourse/likelist")
+    public BaseResponse<Page<UserCourseResDto.UserCourseSortDto>> getChallengeListByScrap(@RequestParam(name = "page")int page){
+        Page<UserCourse> userCourseList = userCourseService.getPageByScrap(page);
+        return new BaseResponse<>(UserCourseConverter.toUserCourseSortList(userCourseList));
+    }
+
+    // 유저코스 정렬 (지역별)
+    @GetMapping("usercourse/arealist")
+    public BaseResponse<Page<UserCourseResDto.UserCourseSortDto>> getChallengeListByArea(@RequestParam(name = "page")int page, @RequestParam(name = "area") Region area){
+        Page<UserCourse> userCourseList = userCourseService.getPageByArea(page, area);
+        return new BaseResponse<>(UserCourseConverter.toUserCourseSortList(userCourseList));
     }
 
 }

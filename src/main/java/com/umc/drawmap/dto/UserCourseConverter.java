@@ -4,6 +4,7 @@ import com.umc.drawmap.domain.User;
 import com.umc.drawmap.domain.UserCourse;
 import com.umc.drawmap.repository.UserRepository;
 import com.umc.drawmap.service.ScrapService;
+import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,24 +58,19 @@ public class UserCourseConverter {
                 .collect(Collectors.toList());
     }
 
-    public static List<UserCourseResDto.UserCourseSortDto> toUserCourseSortDto(List<UserCourse> userCourseList){
-        List<UserCourseResDto.UserCourseSortDto> sortList = new ArrayList<>();
-        for(UserCourse u: userCourseList){
-            User user = u.getUser();
-            UserCourseResDto.UserCourseSortDto result = UserCourseResDto.UserCourseSortDto.builder()
-                    .userCourseId(u.getUserId())
-                    .title(u.getUserCourseTitle())
-                    .difficulty(u.getUserCourseDifficulty())
-                    .content(u.getUserCourseContent())
-                    .area(u.getUserCourseArea())
-                    .user(UserResDto.UserDto.builder().userId(user.getId()).nickName(user.getNickName()).profileImg(user.getProfileImg()).build())
-                    .image(u.getUserImage())
-                    .createdDate(u.getCreatedAt())
-                    .build();
-            sortList.add(result);
-        }
-        return sortList;
-    }
+    public static Page<UserCourseResDto.UserCourseSortDto> toUserCourseSortList(Page<UserCourse> userCoursePage){
 
+        Page<UserCourseResDto.UserCourseSortDto> userCourseSortDto = userCoursePage.map(userCourse -> UserCourseResDto.UserCourseSortDto.builder()
+                .userCourseId(userCourse.getId())
+                .area(userCourse.getUserCourseArea())
+                .user(UserResDto.UserDto.builder().userId(userCourse.getUser().getId()).nickName(userCourse.getUser().getNickName()).profileImg(userCourse.getUser().getProfileImg()).build())
+                .title(userCourse.getUserCourseTitle())
+                .content(userCourse.getUserCourseContent())
+                .image(userCourse.getUserImage())
+                .createdDate(userCourse.getCreatedAt())
+                .difficulty(userCourse.getUserCourseDifficulty())
+                .build());
+        return userCourseSortDto;
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.umc.drawmap.dto.challenge;
 
+import com.umc.drawmap.domain.Region;
 import lombok.*;
 
 import javax.persistence.Column;
@@ -14,7 +15,7 @@ public class ChallengeReqDto {
     public static class CreateChallengeDto{
         private String challengeCourseTitle;
 
-        private String challengeCourseArea;
+        private Region challengeCourseArea;
 
         private String challengeCourseDifficulty;
 
@@ -29,7 +30,7 @@ public class ChallengeReqDto {
     public static class UpdateChallengeDto{
         private String challengeCourseTitle;
 
-        private String challengeCourseArea;
+        private Region challengeCourseArea;
 
         private String challengeCourseDifficulty;
 

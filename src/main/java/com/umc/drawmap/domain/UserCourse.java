@@ -17,14 +17,12 @@ public class UserCourse extends BaseEntity {
     @Column(name = "user_course_id")
     private Long id;
 
-    @Column(name = "user_id")
-    private Long userId;
-
     @Column(name = "user_course_title")
     private String userCourseTitle;
 
     @Column(name = "user_course_area")
-    private String userCourseArea;
+    @Enumerated(EnumType.STRING)
+    private Region userCourseArea;
 
     @Column(name = "user_course_difficulty")
     private String userCourseDifficulty;
@@ -45,7 +43,7 @@ public class UserCourse extends BaseEntity {
     @JoinColumn(name = "id")
     private User user;
 
-    public UserCourse update(String userCourseTitle, String userCourseArea,
+    public UserCourse update(String userCourseTitle, Region userCourseArea,
                              String userCourseDifficulty, String userCourseContent,
                              String files) {
         this.userCourseTitle = userCourseTitle;

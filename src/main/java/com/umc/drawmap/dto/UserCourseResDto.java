@@ -1,6 +1,8 @@
 package com.umc.drawmap.dto;
 
+import com.umc.drawmap.domain.Region;
 import lombok.*;
+import org.hibernate.cache.spi.support.RegionNameQualifier;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,7 +24,7 @@ public class UserCourseResDto {
         private String difficulty;
         private String content;
 
-        private String area;
+        private Region area;
 
         private String image;
         private int scrapCount;
@@ -46,7 +48,7 @@ public class UserCourseResDto {
     public static class MyUserCourseDto{
         private Long userCourseId;
 
-        private String area;
+        private Region area;
         private LocalDateTime createdDate;
 
         private String image;
@@ -73,7 +75,7 @@ public class UserCourseResDto {
         private LocalDateTime createdDate;
         private String difficulty;
         private String content;
-        private String area;
+        private Region area;
         private UserResDto.UserDto user;
         private String image;
     }

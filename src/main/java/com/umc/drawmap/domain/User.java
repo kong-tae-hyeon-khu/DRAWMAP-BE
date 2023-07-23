@@ -30,10 +30,12 @@ public class User {
     private String profileImg;
     @Column(name = "bike_category", length = 30)
     private String bike;
-    @Column(name = "region", length = 10)
-    private String region;
+    @Column(name = "region")
+    @Enumerated(EnumType.STRING)
+    private Region region;
     @Column(name = "gender")
-    private int gender;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
     @Column(name="created_at")
     private LocalDateTime createdAt;
 
@@ -54,5 +56,11 @@ public class User {
     public User() {};
 
     // Setter
+
+
+    public User updateUserChallenge(UserChallenge userChallenge){
+        this.userChallenge = userChallenge;
+        return this;
+    }
 
 }
