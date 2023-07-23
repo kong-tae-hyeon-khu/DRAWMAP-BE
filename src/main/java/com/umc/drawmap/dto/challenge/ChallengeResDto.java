@@ -31,8 +31,6 @@ public class ChallengeResDto {
 
         private String content;
 
-        private UserResDto.UserDto user; // userId, profileImg, name
-
     }
 
     @Builder
@@ -54,8 +52,6 @@ public class ChallengeResDto {
         private LocalDateTime createdDate;
 
         private String image;
-
-        private UserResDto.UserDto user; // userId, profileImg, name
 
     }
 

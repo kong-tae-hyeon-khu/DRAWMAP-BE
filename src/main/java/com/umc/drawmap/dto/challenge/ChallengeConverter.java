@@ -35,7 +35,6 @@ public class ChallengeConverter {
                 .createdDate(challenge.getCreatedAt())
                 .difficulty(challenge.getChallengeCourseDifficulty())
                 .isScraped(isScraped)
-                .user(UserResDto.UserDto.builder().userId(user.getId()).profileImg(user.getProfileImg()).nickName(user.getNickName()).build())
                 .scrapCount(challenge.getScrapCount())
                 .build();
     }
@@ -55,7 +54,6 @@ public class ChallengeConverter {
                 .area(challenge.getChallengeCourseArea())
                 .image(challenge.getChallengeImage())
                 .createdDate(challenge.getCreatedAt())
-                .user(UserResDto.UserDto.builder().userId(user.getId()).profileImg(user.getProfileImg()).nickName(user.getNickName()).build())
                 .build();
     }
 
