@@ -20,7 +20,7 @@ public class SpotImage extends BaseEntity{
     private String spotTitle;
 
     @Column(name = "spot_area")
-    private String spotArea;
+    private Region spotArea;
     @Column(name = "spot_content")
     private String spotContent;
     @Column(name = "spot_image")
@@ -30,7 +30,7 @@ public class SpotImage extends BaseEntity{
     @JoinColumn(name = "challenge_course_id")
     private Challenge challenge;
 
-    public SpotImage update(String spotTitle, String spotArea, String spotContent, String spotImage){
+    public SpotImage update(String spotTitle, Region spotArea, String spotContent, String spotImage){
         this.spotTitle=spotTitle;
         this.spotArea=spotArea;
         this.spotContent=spotContent;

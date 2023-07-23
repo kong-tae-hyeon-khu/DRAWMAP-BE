@@ -1,6 +1,7 @@
 package com.umc.drawmap.service;
 
 import com.umc.drawmap.domain.Challenge;
+import com.umc.drawmap.domain.Region;
 import com.umc.drawmap.domain.User;
 import com.umc.drawmap.domain.UserChallenge;
 import com.umc.drawmap.dto.challenge.ChallengeReqDto;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -77,6 +79,22 @@ public class ChallengeService {
     public List<Challenge> findAll(){
         List<Challenge> challengeList = challengeRepository.findAll();
         return challengeList;
+    }
+
+    // 도전코스 6개씩
+    public Page<Challenge> getPage(int page){
+        PageRequest pageRequest = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "createdAt"));
+        return challengeRepository.findAll(pageRequest);
+    }
+
+    public Page<Challenge> getPageByScrap(int page){
+        PageRequest pageRequest = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "scrapCount"));
+        return challengeRepository.findAll(pageRequest);
+    }
+
+    public Page<Challenge> getPageByArea(int page, Region area){
+        PageRequest pageRequest = PageRequest.of(page, 6);
+        return challengeRepository.findAllByChallengeCourseArea(area, pageRequest);
     }
 
 }

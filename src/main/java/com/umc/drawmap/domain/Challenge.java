@@ -23,7 +23,7 @@ public class Challenge extends BaseEntity {
     private String challengeCourseTitle;
 
     @Column(name = "challenge_course_area")
-    private String challengeCourseArea;
+    private Region challengeCourseArea;
 
     @Column(name = "challenge_course_difficulty")
     private String challengeCourseDifficulty;
@@ -43,7 +43,7 @@ public class Challenge extends BaseEntity {
     @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL)
     private List<SpotImage> spotImages = new ArrayList<>();
 
-    public Challenge update(String challengeCourseTitle, String challengeCourseArea, String challengeCourseDifficulty, String challengeCourseContent, String challengeImage){
+    public Challenge update(String challengeCourseTitle, Region challengeCourseArea, String challengeCourseDifficulty, String challengeCourseContent, String challengeImage){
         this.challengeCourseTitle=challengeCourseTitle;
         this.challengeCourseArea=challengeCourseArea;
         this.challengeCourseDifficulty=challengeCourseDifficulty;

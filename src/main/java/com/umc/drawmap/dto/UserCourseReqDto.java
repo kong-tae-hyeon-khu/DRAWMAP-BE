@@ -1,5 +1,6 @@
 package com.umc.drawmap.dto;
 
+import com.umc.drawmap.domain.Region;
 import lombok.*;
 
 public class UserCourseReqDto {
@@ -11,7 +12,7 @@ public class UserCourseReqDto {
     @Setter
     public static class CreateUserCourseDto{
         private String userCourseTitle;
-        private String userCourseArea;
+        private Region userCourseArea;
         private String userCourseDifficulty;
         private String userCourseContent;
 
@@ -25,7 +26,7 @@ public class UserCourseReqDto {
     @Setter
     public static class UpdateUserCourseDto{
         private String userCourseTitle;
-        private String userCourseArea;
+        private Region userCourseArea;
         private String userCourseDifficulty;
         private String userCourseContent;
     }

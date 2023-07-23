@@ -1,5 +1,7 @@
 package com.umc.drawmap.service;
 
+import com.umc.drawmap.domain.Challenge;
+import com.umc.drawmap.domain.Region;
 import com.umc.drawmap.domain.User;
 import com.umc.drawmap.domain.UserCourse;
 import com.umc.drawmap.dto.UserCourseReqDto;
@@ -10,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -59,16 +62,21 @@ public class UserCourseService {
         return userCourseRepository.findAll();
     }
 
-    public List<UserCourse> getPage(int page, int size){
-        PageRequest pageRequest = PageRequest.of(page,size);
-        Page<UserCourse> fetchPages = userCourseRepository.findAllOrderByCreatedAtDesc(pageRequest);
-        return fetchPages.getContent();
+
+    // 유저코스 10개씩
+    public Page<UserCourse> getPage(int page){
+        PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
+        return userCourseRepository.findAll(pageRequest);
     }
 
-    public List<UserCourse> getPageByScrap(int page, int size){
-        PageRequest pageRequest = PageRequest.of(page,size);
-        Page<UserCourse> fetchPages = userCourseRepository.findAllOrderByScrapCountDesc(pageRequest);
-        return fetchPages.getContent();
+    public Page<UserCourse> getPageByScrap(int page){
+        PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "scrapCount"));
+        return userCourseRepository.findAll(pageRequest);
+    }
+
+    public Page<UserCourse> getPageByArea(int page, Region area){
+        PageRequest pageRequest = PageRequest.of(page, 10);
+        return userCourseRepository.findAllByUserCourseArea(area, pageRequest);
     }
 
     public List<UserCourse> findAllByUser(Long userId){
