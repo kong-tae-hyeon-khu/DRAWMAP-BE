@@ -36,8 +36,8 @@ public class Challenge extends BaseEntity {
     @Column(columnDefinition = "INT DEFAULT 0")
     private int scrapCount;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_challenge_id")
     private UserChallenge userChallenge;
 
     @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL)
@@ -49,6 +49,11 @@ public class Challenge extends BaseEntity {
         this.challengeCourseDifficulty=challengeCourseDifficulty;
         this.challengeCourseContent=challengeCourseContent;
         this.challengeImage=challengeImage;
+        return this;
+    }
+
+    public Challenge updateUserChallenge(UserChallenge userChallenge){
+        this.userChallenge = userChallenge;
         return this;
     }
     public void updateCount(int scrapCount) {

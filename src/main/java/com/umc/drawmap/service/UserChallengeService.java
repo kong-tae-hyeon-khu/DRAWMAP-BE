@@ -69,6 +69,11 @@ public class UserChallengeService {
                 .build();
         userChallengeRepository.save(userChallenge);
 
+        challenge = challenge.updateUserChallenge(userChallenge);
+        challengeRepository.save(challenge);
+        user = user.updateUserChallenge(userChallenge);
+        userRepository.save(user);
+
         // Response DTO 생성.
         UserChallengeResDto.GetUserChallenge resDto = UserChallengeResDto.GetUserChallenge.builder()
                 .userId(user.getId())  // 유저 이름으로 변경가능.

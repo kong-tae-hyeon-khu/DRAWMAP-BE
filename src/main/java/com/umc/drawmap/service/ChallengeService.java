@@ -27,12 +27,12 @@ import java.util.List;
 public class ChallengeService {
 
     private final ChallengeRepository challengeRepository;
-
     private final UserChallengeRepository userChallengeRepository;
     private final UserRepository userRepository;
 
     @Transactional
     public Challenge create(List<MultipartFile> files, ChallengeReqDto.CreateChallengeDto request) throws IOException{
+
         Challenge challenge = Challenge.builder()
                 .challengeCourseTitle(request.getChallengeCourseTitle())
                 .challengeCourseArea(request.getChallengeCourseArea())
@@ -56,7 +56,9 @@ public class ChallengeService {
     }
 
     public Challenge findById(Long challengeId){
-        return challengeRepository.findById(challengeId).get();
+        Challenge challenge = challengeRepository.findById(challengeId)
+                .orElseThrow(()-> new NotFoundException("도전코스를 찾을 수 없습니다."));
+        return challenge;
     }
 
     public List<Challenge> findAllByUser(Long userId){

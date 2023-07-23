@@ -22,10 +22,6 @@ public class ChallengeConverter {
 
     public static ChallengeResDto.ChallengeDto toChallengeDto(Challenge challenge){
 
-        UserChallenge userChallenge = userChallengeRepository.findUserChallengeByChallenge(challenge);
-        User user = userChallenge.getUser();
-        Boolean isScraped = scrapService.findScrapByUserAndChallenge(user, challenge);
-
         return ChallengeResDto.ChallengeDto.builder()
                 .title(challenge.getChallengeCourseTitle())
                 .challengeId(challenge.getId())
@@ -34,7 +30,6 @@ public class ChallengeConverter {
                 .image(challenge.getChallengeImage())
                 .createdDate(challenge.getCreatedAt())
                 .difficulty(challenge.getChallengeCourseDifficulty())
-                .isScraped(isScraped)
                 .scrapCount(challenge.getScrapCount())
                 .build();
     }
@@ -46,8 +41,6 @@ public class ChallengeConverter {
     }
 
     public static ChallengeResDto.MyChallengeDto toMyChallengeDto(Challenge challenge){
-        UserChallenge userChallenge = userChallengeRepository.findUserChallengeByChallenge(challenge);
-        User user = userChallenge.getUser();
 
         return ChallengeResDto.MyChallengeDto.builder()
                 .challengeId(challenge.getId())

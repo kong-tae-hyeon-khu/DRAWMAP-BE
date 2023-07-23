@@ -55,4 +55,10 @@ public class User {
 
     // Setter
 
+
+    public User updateUserChallenge(UserChallenge userChallenge){
+        this.userChallenge = userChallenge;
+        return this;
+    }
+
 }
