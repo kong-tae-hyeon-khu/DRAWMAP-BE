@@ -1,16 +1,12 @@
 package com.umc.drawmap.dto.challenge;
 
 import com.umc.drawmap.domain.Challenge;
-import com.umc.drawmap.domain.User;
-import com.umc.drawmap.domain.UserChallenge;
-import com.umc.drawmap.dto.UserResDto;
 import com.umc.drawmap.repository.UserChallengeRepository;
 import com.umc.drawmap.repository.UserRepository;
 import com.umc.drawmap.service.ScrapService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
