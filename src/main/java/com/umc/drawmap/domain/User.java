@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name = "\"User\"")
+@Entity
+@Table(name = "user")
 @Getter
 @AllArgsConstructor
 @Setter

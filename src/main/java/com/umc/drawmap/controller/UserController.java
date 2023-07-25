@@ -20,14 +20,15 @@ public class UserController {
     }
 
     // 닉네임 중복 확인
-    @GetMapping("/users/{name}")
-    public BaseResponse<UserResDto.UserNameDto> checkName(@PathVariable String name) {
-        return new BaseResponse<>(customOAuth2UserService.checkUserName(name));
+    @GetMapping("/users/{nickName}")
+    public BaseResponse<UserResDto.UserNameDto> checkName(@PathVariable String nickName) {
+        return new BaseResponse<>(customOAuth2UserService.checkUserName(nickName));
     }
 
     // 이메일 중복 확인 (URI 수정하는게 좋을듯..!)
     @GetMapping("/email/{email}")
     public BaseResponse<UserResDto.UserEmailDto> checkEmail(@PathVariable String email) {
+        System.out.println(email);
         return new BaseResponse<>(customOAuth2UserService.checkUserEmail(email));
     }
 }

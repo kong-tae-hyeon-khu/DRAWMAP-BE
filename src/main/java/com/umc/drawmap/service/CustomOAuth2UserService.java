@@ -54,6 +54,7 @@ public class CustomOAuth2UserService {
 
     // 이메일 중복 체크
     public UserResDto.UserEmailDto checkUserEmail(String userEmail) {
+        System.out.println(userEmail);
         if (userRepository.existsByEmail(userEmail)) {
             throw new DuplicateUserEmailException();
         }
