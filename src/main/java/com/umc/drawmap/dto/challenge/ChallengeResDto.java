@@ -1,8 +1,6 @@
 package com.umc.drawmap.dto.challenge;
 
 import com.umc.drawmap.domain.Region;
-import com.umc.drawmap.domain.User;
-import com.umc.drawmap.dto.UserResDto;
 import lombok.*;
 
 import java.time.LocalDateTime;

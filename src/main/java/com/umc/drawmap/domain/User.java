@@ -1,6 +1,5 @@
 package com.umc.drawmap.domain;
 
-import com.umc.drawmap.dto.UserResDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
