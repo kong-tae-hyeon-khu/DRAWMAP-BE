@@ -2,6 +2,7 @@ package com.umc.drawmap.service;
 
 
 import com.umc.drawmap.domain.User;
+import com.umc.drawmap.dto.user.UserReqDto;
 import com.umc.drawmap.dto.user.UserResDto;
 import com.umc.drawmap.exception.user.DuplicateUserEmailException;
 import com.umc.drawmap.exception.user.DuplicateUserNickNameException;
@@ -66,6 +67,34 @@ public class CustomOAuth2UserService {
         return userEmailDto;
     }
 
+    // 유저 기본 정보 수정
+    public UserResDto.UserDto updateUser(Long userId, UserReqDto.updateDto dto) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (!userOptional.isPresent()) {
+            throw new NoExistUserException("해당 유저가 존재하지 않습니다.");
+        }
+        User user = userOptional.get();
+
+        // 이메일 중복 검사.
+        if (userRepository.findByNickName(dto.getNickName()).isPresent()) {
+            throw new DuplicateUserNickNameException();
+        }
+        // 수정 정보 반영
+        user.setNickName(dto.getNickName());
+        user.setBike(dto.getBike());
+        user.setProfileImg(dto.getProfileImg());
+        user.setRegion(dto.getRegion());
+
+        userRepository.save(user);
+
+        UserResDto.UserDto userDto = UserResDto.UserDto.builder()
+                .userId(userId)
+                .nickName(dto.getNickName())
+                .profileImg(dto.getProfileImg())
+                .build();
+
+        return userDto;
+    }
 
 
 }

@@ -7,7 +7,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update # 데이터 보존용 -> 추후 수정
     properties:
       hibernate:
         show_sql: true
