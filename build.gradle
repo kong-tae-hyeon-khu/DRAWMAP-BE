@@ -24,7 +24,8 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation group: 'org.hibernate', name: 'hibernate-spatial', version: '5.6.9.Final'
-
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
 	// Spring Security
 	implementation 'org.springframework.boot:spring-boot-starter-security'

@@ -19,6 +19,7 @@ import com.umc.drawmap.exception.user.DuplicateUserEmailException;
 import com.umc.drawmap.exception.user.DuplicateUserNickNameException;
 import com.umc.drawmap.exception.userChallenge.NoExistUserException;
 import com.umc.drawmap.repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -105,6 +106,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .build();
 
         return userDto;
+    }
+
+    @Transactional
+    public User createUser(String email) {
+        User user = User.builder()
+                .email(email)
+                .build();
+
+        return userRepository.save(user);
     }
 
 
