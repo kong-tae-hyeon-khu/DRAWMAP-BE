@@ -32,7 +32,7 @@ public class UserController {
     }
 
     // 유저 정보 수정
-    @PatchMapping("/user/{uesrId}")
+    @PatchMapping("/user/{userId}")
     public BaseResponse<UserResDto.UserDto> updateUser(@PathVariable Long userId, @RequestBody UserReqDto.updateDto dto) {
         return new BaseResponse<>(customOAuth2UserService.updateUser(userId, dto));
     }
