@@ -41,6 +41,7 @@ public class UserCourseService {
                 .sido(request.getSido())
                 .sgg(request.getSgg())
                 .userCourseContent(request.getUserCourseContent())
+                .userCourseComment(request.getUserCourseComment())
                 .userCourseDifficulty(request.getUserCourseDifficulty())
                 .userImage(FileService.fileUpload(files))
                 .user(user)
@@ -54,7 +55,7 @@ public class UserCourseService {
                 .orElseThrow(()-> new NotFoundException("유저개발코스를 찾을 수 없습니다."));
         userCourse.update(request.getUserCourseTitle(), request.getSido(), request.getSgg(),
                 request.getUserCourseDifficulty(), request.getUserCourseContent(),
-                FileService.fileUpload(files));
+                request.getUserCourseComment(), FileService.fileUpload(files));
         return userCourse;
     }
 
