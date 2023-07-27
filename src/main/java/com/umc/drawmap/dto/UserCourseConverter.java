@@ -17,19 +17,17 @@ public class UserCourseConverter {
 
     public static UserCourseResDto.UserCourseDto toUserCourseDto(UserCourse userCourse){
 
-        User user = userRepository.findUserByUserCourses(userCourse);
-        Boolean isScraped = scrapService.findScrapByUserAndUserCourse(user, userCourse);
 
         return UserCourseResDto.UserCourseDto.builder()
                 .title(userCourse.getUserCourseTitle())
                 .userCourseId(userCourse.getId())
                 .content(userCourse.getUserCourseContent())
-                .area(userCourse.getUserCourseArea())
+                .sido(userCourse.getSido())
+                .sgg(userCourse.getSgg())
                 .image(userCourse.getUserImage())
                 .createdDate(userCourse.getCreatedAt())
                 .difficulty(userCourse.getUserCourseDifficulty())
-                .isScraped(isScraped)
-                .user(UserResDto.UserDto.builder().userId(user.getId()).profileImg(user.getProfileImg()).nickName(user.getNickName()).build())
+                .user(UserResDto.UserDto.builder().userId(userCourse.getUser().getId()).nickName(userCourse.getUser().getNickName()).profileImg(userCourse.getUser().getProfileImg()).build())
                 .scrapCount(userCourse.getScrapCount())
                 .build();
     }
@@ -41,14 +39,14 @@ public class UserCourseConverter {
     }
 
     public static UserCourseResDto.MyUserCourseDto toMyUserCourseDto(UserCourse userCourse){
-        User user = userRepository.findUserByUserCourses(userCourse);
 
         return UserCourseResDto.MyUserCourseDto.builder()
                 .userCourseId(userCourse.getId())
-                .area(userCourse.getUserCourseArea())
+                .sido(userCourse.getSido())
+                .sgg(userCourse.getSgg())
                 .image(userCourse.getUserImage())
                 .createdDate(userCourse.getCreatedAt())
-                .user(UserResDto.UserDto.builder().userId(user.getId()).profileImg(user.getProfileImg()).nickName(user.getNickName()).build())
+                .user(UserResDto.UserDto.builder().userId(userCourse.getUser().getId()).nickName(userCourse.getUser().getNickName()).profileImg(userCourse.getUser().getProfileImg()).build())
                 .build();
     }
 
@@ -62,7 +60,8 @@ public class UserCourseConverter {
 
         Page<UserCourseResDto.UserCourseSortDto> userCourseSortDto = userCoursePage.map(userCourse -> UserCourseResDto.UserCourseSortDto.builder()
                 .userCourseId(userCourse.getId())
-                .area(userCourse.getUserCourseArea())
+                .sido(userCourse.getSido())
+                .sgg(userCourse.getSgg())
                 .user(UserResDto.UserDto.builder().userId(userCourse.getUser().getId()).nickName(userCourse.getUser().getNickName()).profileImg(userCourse.getUser().getProfileImg()).build())
                 .title(userCourse.getUserCourseTitle())
                 .content(userCourse.getUserCourseContent())

@@ -1,19 +1,21 @@
 package com.umc.drawmap.service;
 
 import com.umc.drawmap.domain.Challenge;
-import com.umc.drawmap.domain.Region;
+import com.umc.drawmap.domain.SpotImage;
 import com.umc.drawmap.domain.User;
 import com.umc.drawmap.domain.UserChallenge;
+import com.umc.drawmap.dto.SpotImageResDto;
 import com.umc.drawmap.dto.challenge.ChallengeReqDto;
+import com.umc.drawmap.dto.challenge.ChallengeResDto;
 import com.umc.drawmap.exception.NotFoundException;
 import com.umc.drawmap.repository.ChallengeRepository;
+import com.umc.drawmap.repository.SpotImageRepository;
 import com.umc.drawmap.repository.UserChallengeRepository;
 import com.umc.drawmap.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,13 +33,15 @@ public class ChallengeService {
     private final ChallengeRepository challengeRepository;
     private final UserChallengeRepository userChallengeRepository;
     private final UserRepository userRepository;
+    private final SpotImageRepository spotImageRepository;
 
     @Transactional
     public Challenge create(List<MultipartFile> files, ChallengeReqDto.CreateChallengeDto request) throws IOException{
 
         Challenge challenge = Challenge.builder()
                 .challengeCourseTitle(request.getChallengeCourseTitle())
-                .challengeCourseArea(request.getChallengeCourseArea())
+                .sido(request.getSido())
+                .sgg(request.getSgg())
                 .challengeCourseContent(request.getChallengeCourseContent())
                 .challengeCourseDifficulty(request.getChallengeCourseDifficulty())
                 .challengeImage(FileService.fileUpload(files))
@@ -49,7 +53,7 @@ public class ChallengeService {
     public Challenge update(Long challengeId,List<MultipartFile> files, ChallengeReqDto.UpdateChallengeDto request) throws IOException{
         Challenge challenge = challengeRepository.findById(challengeId)
                 .orElseThrow(() -> new NotFoundException("도전코스를 찾을 수 없습니다."));
-        challenge.update(request.getChallengeCourseTitle(), request.getChallengeCourseArea(), request.getChallengeCourseDifficulty(), request.getChallengeCourseContent(), FileService.fileUpload(files));
+        challenge.update(request.getChallengeCourseTitle(), request.getSido(), request.getSgg(), request.getChallengeCourseDifficulty(), request.getChallengeCourseContent(), FileService.fileUpload(files));
         return challenge;
     }
 
@@ -92,9 +96,32 @@ public class ChallengeService {
         return challengeRepository.findAll(pageRequest);
     }
 
-    public Page<Challenge> getPageByArea(int page, Region area){
+    public Page<Challenge> getPageByArea(int page, String sido, String sgg){
         PageRequest pageRequest = PageRequest.of(page, 6);
-        return challengeRepository.findAllByChallengeCourseArea(area, pageRequest);
+        return challengeRepository.findAllBySidoOrSgg(sido, sgg, pageRequest);
+    }
+
+    public ChallengeResDto.ChallengeDetailDto getSpotRecommend(Long courseId){
+        Challenge challenge = challengeRepository.findById(courseId)
+                .orElseThrow(() -> new NotFoundException("도전코스를 찾을 수 없습니다."));
+        List<SpotImage> spotImageList = spotImageRepository.findAllByChallenge(challenge);
+        List<SpotImageResDto.SpotImageBriefDto> list = new ArrayList<>();
+        for(SpotImage i: spotImageList){
+            SpotImageResDto.SpotImageBriefDto dto = SpotImageResDto.SpotImageBriefDto.builder()
+                    .spotImageId(i.getId())
+                    .title(i.getSpotTitle())
+                    .image(i.getSpotImage())
+                    .build();
+            list.add(dto);
+        }
+        return ChallengeResDto.ChallengeDetailDto.builder()
+                .challengeId(challenge.getId())
+                .title(challenge.getChallengeCourseTitle())
+                .sido(challenge.getSido())
+                .sgg(challenge.getSgg())
+                .createdDate(challenge.getCreatedAt())
+                .spotImage(list)
+                .build();
     }
 
 }

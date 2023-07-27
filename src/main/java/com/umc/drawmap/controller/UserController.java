@@ -1,5 +1,6 @@
 package com.umc.drawmap.controller;
 
+
 import com.umc.drawmap.dto.user.UserReqDto;
 import com.umc.drawmap.dto.user.UserResDto;
 import com.umc.drawmap.exception.BaseResponse;
@@ -36,4 +37,5 @@ public class UserController {
     public BaseResponse<UserResDto.UserDto> updateUser(@PathVariable Long userId, @RequestBody UserReqDto.updateDto dto) {
         return new BaseResponse<>(customOAuth2UserService.updateUser(userId, dto));
     }
+
 }

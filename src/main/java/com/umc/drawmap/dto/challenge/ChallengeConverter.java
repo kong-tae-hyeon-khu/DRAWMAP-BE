@@ -23,7 +23,8 @@ public class ChallengeConverter {
                 .title(challenge.getChallengeCourseTitle())
                 .challengeId(challenge.getId())
                 .content(challenge.getChallengeCourseContent())
-                .area(challenge.getChallengeCourseArea())
+                .sido(challenge.getSido())
+                .sgg(challenge.getSgg())
                 .image(challenge.getChallengeImage())
                 .createdDate(challenge.getCreatedAt())
                 .difficulty(challenge.getChallengeCourseDifficulty())
@@ -41,7 +42,8 @@ public class ChallengeConverter {
 
         return ChallengeResDto.MyChallengeDto.builder()
                 .challengeId(challenge.getId())
-                .area(challenge.getChallengeCourseArea())
+                .sido(challenge.getSido())
+                .sgg(challenge.getSgg())
                 .image(challenge.getChallengeImage())
                 .createdDate(challenge.getCreatedAt())
                 .build();
@@ -57,7 +59,8 @@ public class ChallengeConverter {
 
         Page<ChallengeResDto.ChallengeSortDto> challengeSortDto = challengePage.map(challenge -> ChallengeResDto.ChallengeSortDto.builder()
                 .challengeId(challenge.getId())
-                .area(challenge.getChallengeCourseArea())
+                .sido(challenge.getSido())
+                .sgg(challenge.getSgg())
                 .title(challenge.getChallengeCourseTitle())
                 .content(challenge.getChallengeCourseContent())
                 .createdDate(challenge.getCreatedAt())

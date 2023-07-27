@@ -2,8 +2,8 @@ package com.umc.drawmap.dto;
 
 import com.umc.drawmap.domain.Region;
 import com.umc.drawmap.dto.user.UserResDto;
-import lombok.*;
 
+import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -24,7 +24,8 @@ public class UserCourseResDto {
         private String difficulty;
         private String content;
 
-        private Region area;
+        private String sido;
+        private String sgg;
 
         private String image;
         private int scrapCount;
@@ -48,7 +49,8 @@ public class UserCourseResDto {
     public static class MyUserCourseDto{
         private Long userCourseId;
 
-        private Region area;
+        private String sido;
+        private String sgg;
         private LocalDateTime createdDate;
 
         private String image;
@@ -75,8 +77,11 @@ public class UserCourseResDto {
         private LocalDateTime createdDate;
         private String difficulty;
         private String content;
-        private Region area;
+        private String sido;
+        private String sgg;
         private UserResDto.UserDto user;
         private String image;
     }
+
+
 }
