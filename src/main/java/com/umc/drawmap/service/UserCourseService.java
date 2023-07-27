@@ -1,10 +1,9 @@
 package com.umc.drawmap.service;
 
-import com.umc.drawmap.domain.Challenge;
 import com.umc.drawmap.domain.User;
 import com.umc.drawmap.domain.UserCourse;
 import com.umc.drawmap.dto.UserCourseReqDto;
-import com.umc.drawmap.dto.UserResDto;
+import com.umc.drawmap.dto.user.UserResDto;
 import com.umc.drawmap.exception.NotFoundException;
 import com.umc.drawmap.repository.ChallengeRepository;
 import com.umc.drawmap.repository.UserCourseRepository;

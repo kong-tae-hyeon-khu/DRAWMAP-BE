@@ -33,6 +33,10 @@ public class User {
     @Column(name = "gender")
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Role role;
     @Column(name="created_at")
     private LocalDateTime createdAt;
 
@@ -66,5 +70,4 @@ public class User {
         this.userChallenge = userChallenge;
         return this;
     }
-
 }
