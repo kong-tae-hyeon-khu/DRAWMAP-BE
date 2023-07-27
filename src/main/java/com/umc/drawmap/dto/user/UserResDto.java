@@ -3,6 +3,8 @@ package com.umc.drawmap.dto.user;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 public class UserResDto {
 
     @Builder
@@ -27,5 +29,17 @@ public class UserResDto {
     public static class UserEmailDto {
         private String email;
         private String message;
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class PostLoginDto{
+        private String tokenType;
+        private String accessToken;
+        private Integer expiresIn;
+        private String refreshToken;
+        private Integer refreshTokenExpiresIn;
     }
 }

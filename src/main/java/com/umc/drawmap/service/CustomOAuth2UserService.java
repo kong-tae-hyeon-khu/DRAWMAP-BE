@@ -1,6 +1,17 @@
 package com.umc.drawmap.service;
 
+import java.util.Collections;
 
+import javax.servlet.http.HttpSession;
+
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.stereotype.Service;
 import com.umc.drawmap.domain.User;
 import com.umc.drawmap.dto.user.UserReqDto;
 import com.umc.drawmap.dto.user.UserResDto;
@@ -8,12 +19,11 @@ import com.umc.drawmap.exception.user.DuplicateUserEmailException;
 import com.umc.drawmap.exception.user.DuplicateUserNickNameException;
 import com.umc.drawmap.exception.userChallenge.NoExistUserException;
 import com.umc.drawmap.repository.UserRepository;
-import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-public class CustomOAuth2UserService {
+public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
 
     public CustomOAuth2UserService(UserRepository userRepository) {
@@ -83,7 +93,8 @@ public class CustomOAuth2UserService {
         user.setNickName(dto.getNickName());
         user.setBike(dto.getBike());
         user.setProfileImg(dto.getProfileImg());
-        user.setRegion(dto.getRegion());
+        user.setSido(dto.getSido());
+        user.setSgg(dto.getSgg());
 
         userRepository.save(user);
 
@@ -95,6 +106,7 @@ public class CustomOAuth2UserService {
 
         return userDto;
     }
+
 
 
 }

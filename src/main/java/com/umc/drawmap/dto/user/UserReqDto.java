@@ -1,5 +1,6 @@
 package com.umc.drawmap.dto.user;
 
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +14,8 @@ public class UserReqDto {
         private String nickName;
         private String profileImg;
         private String bike;
-        private Region region;
+        private String sido;
+        private String sgg;
 
     }
 }

@@ -20,9 +20,6 @@ public class UserCourse extends BaseEntity {
     @Column(name = "user_course_title")
     private String userCourseTitle;
 
-//    @Column(name = "user_course_area")
-//    @Enumerated(EnumType.STRING)
-//    private Region userCourseArea;
 
     @Column(name = "user_course_difficulty")
     private String userCourseDifficulty;

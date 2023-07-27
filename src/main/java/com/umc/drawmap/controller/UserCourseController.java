@@ -3,7 +3,7 @@ package com.umc.drawmap.controller;
 import com.umc.drawmap.dto.UserCourseConverter;
 import com.umc.drawmap.dto.UserCourseReqDto;
 import com.umc.drawmap.dto.UserCourseResDto;
-import com.umc.drawmap.dto.UserResDto;
+import com.umc.drawmap.dto.user.UserResDto;
 import com.umc.drawmap.exception.BaseResponse;
 import com.umc.drawmap.service.UserCourseService;
 import com.umc.drawmap.domain.UserCourse;
