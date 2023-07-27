@@ -122,6 +122,7 @@ public class UserChallengeService {
 
         return resDto;
     }
+
     // 유저 전체 도전 조회
     public List<UserChallengeResDto.GetUserChallenge> userChallengeList() {
 

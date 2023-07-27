@@ -1,7 +1,6 @@
 package com.umc.drawmap.controller;
 
 import com.umc.drawmap.domain.Challenge;
-import com.umc.drawmap.domain.Region;
 import com.umc.drawmap.dto.challenge.ChallengeConverter;
 import com.umc.drawmap.dto.challenge.ChallengeReqDto;
 import com.umc.drawmap.dto.challenge.ChallengeResDto;
@@ -49,22 +48,28 @@ public class ChallengeController {
     // 페이지 0부터 시작 -> ex) 6개씩 있는 2페이지 조회 PageRequest.of((page)1,(size)5)
     @GetMapping("/list")
     public BaseResponse<Page<ChallengeResDto.ChallengeSortDto>> getChallengeListByCreatedAt(@RequestParam(name = "page")int page){
-        Page<Challenge> challengeList = challengeService.getPage(page);
+        Page<Challenge> challengeList = challengeService.getPage(page-1);
         return new BaseResponse<>(ChallengeConverter.toChallengeSortList(challengeList));
     }
 
     // 도전코스 정렬 (인기순)
     @GetMapping("/likelist")
     public BaseResponse<Page<ChallengeResDto.ChallengeSortDto>> getChallengeListByScrap(@RequestParam(name = "page")int page){
-        Page<Challenge> challengeList = challengeService.getPageByScrap(page);
+        Page<Challenge> challengeList = challengeService.getPageByScrap(page-1);
         return new BaseResponse<>(ChallengeConverter.toChallengeSortList(challengeList));
     }
 
     // 도전코스 정렬 (지역별)
     @GetMapping("/arealist")
-    public BaseResponse<Page<ChallengeResDto.ChallengeSortDto>> getChallengeListByArea(@RequestParam(name = "page")int page, @RequestParam(name = "area") Region area){
-        Page<Challenge> challengeList = challengeService.getPageByArea(page, area);
+    public BaseResponse<Page<ChallengeResDto.ChallengeSortDto>> getChallengeListByArea(@RequestParam(name = "page")int page, @RequestParam(name = "sido") String sido, @RequestParam(name = "sgg")String sgg){
+        Page<Challenge> challengeList = challengeService.getPageByArea(page-1, sido, sgg);
         return new BaseResponse<>(ChallengeConverter.toChallengeSortList(challengeList));
+    }
+
+    // 관광지 추천 (코스사진이랑 관광지사진만)
+    @GetMapping("/spot/image/{courseId}")
+    public BaseResponse<ChallengeResDto.ChallengeDetailDto> getSpotRecommend(@PathVariable(name = "courseId")Long courseId){
+        return new BaseResponse<>(challengeService.getSpotRecommend(courseId));
     }
 
 

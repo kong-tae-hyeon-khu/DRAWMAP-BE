@@ -1,8 +1,6 @@
 package com.umc.drawmap.dto.challenge;
 
-import com.umc.drawmap.domain.Region;
-import com.umc.drawmap.domain.User;
-import com.umc.drawmap.dto.UserResDto;
+import com.umc.drawmap.dto.SpotImageResDto;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -23,7 +21,8 @@ public class ChallengeResDto {
         private String title;
         private String path; // 코스 경로
         private String difficulty;
-        private Region area;
+        private String sido;
+        private String sgg;
 
         private LocalDateTime createdDate;
 
@@ -49,7 +48,8 @@ public class ChallengeResDto {
     public static class MyChallengeDto{
         private Long challengeId;
 
-        private Region area;
+        private String sido;
+        private String sgg;
         private LocalDateTime createdDate;
 
         private String image;
@@ -73,10 +73,27 @@ public class ChallengeResDto {
         private Boolean isScraped; // 현재 유저가 스크랩을 눌렀는지 여부 (하트 색칠 여부)
         private String title;
         private String difficulty;
-        private Region area;
+        private String sido;
+        private String sgg;
         private LocalDateTime createdDate;
         private String image;
         private String content;
+
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class ChallengeDetailDto{
+        private Long challengeId;
+        private String title;
+        private String sido;
+        private String sgg;
+        private LocalDateTime createdDate;
+        private String image;
+        private List<SpotImageResDto.SpotImageBriefDto> spotImage;
+
 
     }
 
