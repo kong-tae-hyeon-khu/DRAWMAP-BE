@@ -17,6 +17,7 @@ public class UserCourseReqDto {
         private String sgg;
         private String userCourseDifficulty;
         private String userCourseContent;
+        private String userCourseComment;
     }
 
     @Builder
@@ -30,5 +31,6 @@ public class UserCourseReqDto {
         private String sgg;
         private String userCourseDifficulty;
         private String userCourseContent;
+        private String userCourseComment;
     }
 }
