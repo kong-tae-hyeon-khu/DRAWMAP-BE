@@ -1,7 +1,6 @@
 package com.umc.drawmap.dto;
 
 import com.sun.istack.NotNull;
-import com.umc.drawmap.domain.Region;
 import lombok.*;
 
 public class SpotImageReqDto {
@@ -20,7 +19,9 @@ public class SpotImageReqDto {
         @NotNull
         private String content;
         @NotNull
-        private Region area;
+        private String sido;
+        @NotNull
+        private String sgg;
     }
 
     @Builder
@@ -31,7 +32,8 @@ public class SpotImageReqDto {
     public static class UpdateSpotImageDto{
         private String title;
         private String content;
-        private Region area;
+        private String sido;
+        private String sgg;
     }
 
 

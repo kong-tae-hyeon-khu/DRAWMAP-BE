@@ -22,9 +22,6 @@ public class Challenge extends BaseEntity {
     @Column(name = "challenge_course_title")
     private String challengeCourseTitle;
 
-    @Column(name = "challenge_course_area")
-    private Region challengeCourseArea;
-
     @Column(name = "challenge_course_difficulty")
     private String challengeCourseDifficulty;
 
@@ -36,6 +33,12 @@ public class Challenge extends BaseEntity {
     @Column(columnDefinition = "INT DEFAULT 0")
     private int scrapCount;
 
+    @Column(name = "sido")
+    private String sido;
+
+    @Column(name = "sgg")
+    private String sgg;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_challenge_id")
     private UserChallenge userChallenge;
@@ -43,9 +46,10 @@ public class Challenge extends BaseEntity {
     @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL)
     private List<SpotImage> spotImages = new ArrayList<>();
 
-    public Challenge update(String challengeCourseTitle, Region challengeCourseArea, String challengeCourseDifficulty, String challengeCourseContent, String challengeImage){
+    public Challenge update(String challengeCourseTitle, String sido, String sgg, String challengeCourseDifficulty, String challengeCourseContent, String challengeImage){
         this.challengeCourseTitle=challengeCourseTitle;
-        this.challengeCourseArea=challengeCourseArea;
+        this.sido = sido;
+        this.sgg = sgg;
         this.challengeCourseDifficulty=challengeCourseDifficulty;
         this.challengeCourseContent=challengeCourseContent;
         this.challengeImage=challengeImage;

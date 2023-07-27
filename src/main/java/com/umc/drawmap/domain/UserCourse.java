@@ -20,9 +20,9 @@ public class UserCourse extends BaseEntity {
     @Column(name = "user_course_title")
     private String userCourseTitle;
 
-    @Column(name = "user_course_area")
-    @Enumerated(EnumType.STRING)
-    private Region userCourseArea;
+//    @Column(name = "user_course_area")
+//    @Enumerated(EnumType.STRING)
+//    private Region userCourseArea;
 
     @Column(name = "user_course_difficulty")
     private String userCourseDifficulty;
@@ -39,15 +39,23 @@ public class UserCourse extends BaseEntity {
     @Column(columnDefinition = "INT DEFAULT 0")
     private int scrapCount;
 
+    @Column(name = "sido")
+    private String sido;
+
+    @Column(name = "sgg")
+    private String sgg;
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
     private User user;
 
-    public UserCourse update(String userCourseTitle, Region userCourseArea,
+    public UserCourse update(String userCourseTitle, String sido, String sgg,
                              String userCourseDifficulty, String userCourseContent,
                              String files) {
         this.userCourseTitle = userCourseTitle;
-        this.userCourseArea = userCourseArea;
+        this.sido = sido;
+        this.sgg = sgg;
         this.userCourseDifficulty = userCourseDifficulty;
         this.userCourseContent = userCourseContent;
         this.files = files;

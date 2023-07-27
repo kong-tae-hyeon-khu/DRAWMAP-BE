@@ -28,7 +28,8 @@ public class SpotImageService {
                 .orElseThrow(() -> new NotFoundException("도전코스를 찾을 수 없습니다."));
         SpotImage spotImage = SpotImage.builder()
                 .spotTitle(request.getTitle())
-                .spotArea(request.getArea())
+                .sido(request.getSido())
+                .sgg(request.getSgg())
                 .spotContent(request.getContent())
                 .spotImage(FileService.singleFileUpload(file))
                 .challenge(challenge)
@@ -41,7 +42,7 @@ public class SpotImageService {
         Challenge challenge = challengeRepository.findById(courseId)
                 .orElseThrow(() -> new NotFoundException("도전코스를 찾을 수 없습니다."));;
         SpotImage spotImage = spotImageRepository.findByIdAndChallenge(spotId, challenge);
-        spotImage.update(request.getTitle(), request.getArea(), request.getContent(), FileService.singleFileUpload(file));
+        spotImage.update(request.getTitle(), request.getSido(), request.getSgg(), request.getContent(), FileService.singleFileUpload(file));
         return spotImage;
     }
 
@@ -55,7 +56,8 @@ public class SpotImageService {
                     .spotImageId(s.getId())
                     .title(s.getSpotTitle())
                     .content(s.getSpotContent())
-                    .area(s.getSpotArea())
+                    .sido(s.getSido())
+                    .sgg(s.getSgg())
                     .image(s.getSpotImage())
                     .createdDate(s.getCreatedAt())
                     .build();

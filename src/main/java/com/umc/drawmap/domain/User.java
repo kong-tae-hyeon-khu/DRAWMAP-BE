@@ -30,9 +30,6 @@ public class User {
     private String profileImg;
     @Column(name = "bike_category", length = 30)
     private String bike;
-    @Column(name = "region")
-    @Enumerated(EnumType.STRING)
-    private Region region;
     @Column(name = "gender")
     @Enumerated(EnumType.STRING)
     private Gender gender;
@@ -42,6 +39,13 @@ public class User {
     // Token
     @Column(name = "refresh_token")
     private String refresh_token;
+
+    @Column(name = "sido")
+    private String sido;
+
+    @Column(name = "sgg")
+    private String sgg;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_challenge_id")

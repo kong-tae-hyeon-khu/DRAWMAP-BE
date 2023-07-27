@@ -1,12 +1,9 @@
 package com.umc.drawmap.controller;
 
-import com.umc.drawmap.domain.Challenge;
-import com.umc.drawmap.domain.Region;
 import com.umc.drawmap.dto.UserCourseConverter;
 import com.umc.drawmap.dto.UserCourseReqDto;
 import com.umc.drawmap.dto.UserCourseResDto;
-import com.umc.drawmap.dto.challenge.ChallengeConverter;
-import com.umc.drawmap.dto.challenge.ChallengeResDto;
+import com.umc.drawmap.dto.UserResDto;
 import com.umc.drawmap.exception.BaseResponse;
 import com.umc.drawmap.service.UserCourseService;
 import com.umc.drawmap.domain.UserCourse;
@@ -76,22 +73,28 @@ public class UserCourseController {
     // 페이지 0부터 시작 -> ex) 10개씩 있는 2페이지 조회 PageRequest.of((page)1,(size)10)
     @GetMapping("usercourse/list")
     public BaseResponse<Page<UserCourseResDto.UserCourseSortDto>> getChallengeListByCreatedAt(@RequestParam(name = "page")int page){
-        Page<UserCourse> userCourseList = userCourseService.getPage(page);
+        Page<UserCourse> userCourseList = userCourseService.getPage(page-1);
         return new BaseResponse<>(UserCourseConverter.toUserCourseSortList(userCourseList));
     }
 
     // 유저코스 정렬 (인기순)
     @GetMapping("usercourse/likelist")
     public BaseResponse<Page<UserCourseResDto.UserCourseSortDto>> getChallengeListByScrap(@RequestParam(name = "page")int page){
-        Page<UserCourse> userCourseList = userCourseService.getPageByScrap(page);
+        Page<UserCourse> userCourseList = userCourseService.getPageByScrap(page-1);
         return new BaseResponse<>(UserCourseConverter.toUserCourseSortList(userCourseList));
     }
 
     // 유저코스 정렬 (지역별)
     @GetMapping("usercourse/arealist")
-    public BaseResponse<Page<UserCourseResDto.UserCourseSortDto>> getChallengeListByArea(@RequestParam(name = "page")int page, @RequestParam(name = "area") Region area){
-        Page<UserCourse> userCourseList = userCourseService.getPageByArea(page, area);
+    public BaseResponse<Page<UserCourseResDto.UserCourseSortDto>> getChallengeListByArea(@RequestParam(name = "page")int page, @RequestParam(name = "sido") String sido, @RequestParam(name = "sgg") String sgg){
+        Page<UserCourse> userCourseList = userCourseService.getPageByArea(page-1, sido, sgg);
         return new BaseResponse<>(UserCourseConverter.toUserCourseSortList(userCourseList));
+    }
+
+    // Top3 유저 정렬 (유저개발코스의 찜 개수)
+    @GetMapping("/usercourse/user")
+    public BaseResponse<List<UserResDto.UserDto>> getTop3User(){
+        return new BaseResponse<>(userCourseService.getTop3User());
     }
 
 }

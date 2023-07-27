@@ -1,10 +1,8 @@
 package com.umc.drawmap.dto;
 
-import com.umc.drawmap.domain.Region;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class SpotImageResDto {
 
@@ -16,10 +14,23 @@ public class SpotImageResDto {
         private Long spotImageId;
         private String title;
         private String content;
-        private Region area;
+        private String sido;
+        private String sgg;
         private String image;
         private LocalDateTime createdDate;
     }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class SpotImageBriefDto{
+        private Long spotImageId;
+        private String title;
+        private String image;
+    }
+
+
 
 
 }
