@@ -1,6 +1,5 @@
 package com.umc.drawmap.dto;
 
-import com.umc.drawmap.domain.Region;
 import com.umc.drawmap.dto.user.UserResDto;
 
 import lombok.*;
@@ -23,6 +22,7 @@ public class UserCourseResDto {
         //        private String path; // 코스 경로
         private String difficulty;
         private String content;
+        private String comment;
 
         private String sido;
         private String sgg;
@@ -77,6 +77,7 @@ public class UserCourseResDto {
         private LocalDateTime createdDate;
         private String difficulty;
         private String content;
+        private String comment;
         private String sido;
         private String sgg;
         private UserResDto.UserDto user;

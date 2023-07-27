@@ -1,6 +1,5 @@
 package com.umc.drawmap.dto.user;
 
-import com.umc.drawmap.domain.Region;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
