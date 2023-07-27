@@ -1,6 +1,5 @@
 package com.umc.drawmap.domain;
 
-import com.umc.drawmap.dto.UserResDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +10,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name = "\"User\"")
+@Entity
+@Table(name = "user")
 @Getter
 @AllArgsConstructor
 @Setter

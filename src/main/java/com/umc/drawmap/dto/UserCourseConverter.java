@@ -2,11 +2,11 @@ package com.umc.drawmap.dto;
 
 import com.umc.drawmap.domain.User;
 import com.umc.drawmap.domain.UserCourse;
+import com.umc.drawmap.dto.user.UserResDto;
 import com.umc.drawmap.repository.UserRepository;
 import com.umc.drawmap.service.ScrapService;
 import org.springframework.data.domain.Page;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
