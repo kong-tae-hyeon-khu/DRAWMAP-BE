@@ -4,7 +4,12 @@ package com.umc.drawmap.controller;
 import com.umc.drawmap.dto.user.UserReqDto;
 import com.umc.drawmap.dto.user.UserResDto;
 import com.umc.drawmap.exception.BaseResponse;
+import com.umc.drawmap.security.KakaoUserInfo;
+import com.umc.drawmap.security.KakaoUserInfoResponse;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import com.umc.drawmap.service.CustomOAuth2UserService;
+import org.json.simple.parser.ParseException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -14,12 +19,17 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 
 @RestController
 public class UserController {
     private final CustomOAuth2UserService customOAuth2UserService;
-    public UserController(CustomOAuth2UserService customOAuth2UserService) {
+    private final KakaoUserInfo kakaoUserInfo;
+    public UserController(CustomOAuth2UserService customOAuth2UserService, KakaoUserInfo kakaoUserInfo) {
         this.customOAuth2UserService = customOAuth2UserService;
+        this.kakaoUserInfo = kakaoUserInfo;
     }
     // 유저 기본 정보 조회.
     @GetMapping("/user/{userId}")
@@ -55,8 +65,11 @@ public class UserController {
         return new BaseResponse<>(response);
     }
 
+
+
+    // Access Token 받아오기
     @GetMapping("/oauth2/kakao")
-    public String getAccessToken(@RequestParam("code") String code) {
+    public String getAccessToken(@RequestParam("code") String code) throws ParseException {
         System.out.println("code = " + code);
 
         // 1. header 생성
@@ -66,7 +79,7 @@ public class UserController {
         // 2. body 생성
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code"); //고정값
-        params.add("client_id", "client_id입력하세요");
+        params.add("client_id", "client_id 입력해주세요!!");
         params.add("redirect_uri", "http://localhost:9000/callback"); //등록한 redirect uri
         params.add("code", code);
 
@@ -75,16 +88,32 @@ public class UserController {
 
         // 4. http 요청하기
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<Object> response = restTemplate.exchange(
+        ResponseEntity<String> response = restTemplate.exchange(
                 "https://kauth.kakao.com/oauth/token",
                 HttpMethod.POST,
                 httpEntity,
-                Object.class
+                String.class
         );
 
         System.out.println("response = " + response);
 
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) jsonParser.parse(response.getBody());
+        String accessToken = (String) jsonObject.get("access_token");
+        String refreshToken = (String) jsonObject.get("refresh_token");
+        Map<String, String> token = new LinkedHashMap<>();
+        token.put("access_token", accessToken);
+        token.put("refresh_token", refreshToken);
 
-        return "home";
+        return token.toString();
+
+    }
+
+    @GetMapping("/user")
+    @ResponseBody
+    public BaseResponse<String> createUser(@RequestParam("accessToken")String accessToken){
+        KakaoUserInfoResponse userInfo = kakaoUserInfo.getUserInfo(accessToken);
+        customOAuth2UserService.createUser(userInfo.getKakao_account().getEmail());
+        return new BaseResponse<>("회원정보가 저장되었습니다.");
     }
 }

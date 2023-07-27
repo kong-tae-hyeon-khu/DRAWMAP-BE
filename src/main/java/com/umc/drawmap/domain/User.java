@@ -50,7 +50,6 @@ public class User {
     @Column(name = "sgg")
     private String sgg;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_challenge_id")
     private UserChallenge userChallenge;
