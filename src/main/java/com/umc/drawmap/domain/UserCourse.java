@@ -27,6 +27,9 @@ public class UserCourse extends BaseEntity {
     @Column(name = "user_course_content")
     private String userCourseContent;
 
+    @Column(name = "user_course_comment")
+    private String userCourseComment;
+
     @Column(name = "user_image")
     private String userImage;
 
@@ -49,12 +52,13 @@ public class UserCourse extends BaseEntity {
 
     public UserCourse update(String userCourseTitle, String sido, String sgg,
                              String userCourseDifficulty, String userCourseContent,
-                             String files) {
+                             String userCourseComment, String files) {
         this.userCourseTitle = userCourseTitle;
         this.sido = sido;
         this.sgg = sgg;
         this.userCourseDifficulty = userCourseDifficulty;
         this.userCourseContent = userCourseContent;
+        this.userCourseComment = userCourseComment;
         this.files = files;
         return this;
     }

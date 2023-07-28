@@ -111,9 +111,9 @@ public class UserController {
 
     @GetMapping("/user")
     @ResponseBody
-    public BaseResponse<String> createUser(@RequestParam("accessToken")String accessToken){
+    public BaseResponse<String> createUser(@RequestParam("accessToken")String accessToken, @RequestBody UserReqDto.signUpDto dto){
         KakaoUserInfoResponse userInfo = kakaoUserInfo.getUserInfo(accessToken);
-        customOAuth2UserService.createUser(userInfo.getKakao_account().getEmail());
+        customOAuth2UserService.createUser(userInfo.getKakao_account().getEmail(), dto);
         return new BaseResponse<>("회원정보가 저장되었습니다.");
     }
 }

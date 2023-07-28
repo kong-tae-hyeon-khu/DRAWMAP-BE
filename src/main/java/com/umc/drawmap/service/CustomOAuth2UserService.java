@@ -109,14 +109,38 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     @Transactional
-    public User createUser(String email) {
+    public User createUser(String email, UserReqDto.signUpDto dto) {
+        // 이미 가입했는지 이메일을 통해 Check
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            throw new DuplicateUserEmailException();
+        }
+        // 가입하지 않았다면, -> 유저 생성.
         User user = User.builder()
-                .email(email)
+                .nickName(dto.getNickName())
+                .bike(dto.getBike())
+                .role(dto.getRole())
+                .gender(dto.getGender())
+                .sgg(dto.getSgg())
+                .sido(dto.getSido())
+                .email(dto.getEmail())
+                .profileImg(dto.getProfileImg())
                 .build();
 
         return userRepository.save(user);
     }
 
+    @Transactional
+    public User loginUser(String email) {
+        // 우리의 Access Token (JWT) 를 발급해주어야 할까..?ㅎ
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            return userOptional.get();
+        }
+        else {
+            throw new NoExistUserException("해당 유저가 존재하지 않습니다. 회원가입이 필요합니다");
+        }
+    }
 
 
 }
