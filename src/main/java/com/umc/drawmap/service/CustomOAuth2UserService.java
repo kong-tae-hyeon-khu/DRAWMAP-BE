@@ -109,9 +109,22 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     @Transactional
-    public User createUser(String email) {
+    public User createUser(String email, UserReqDto.signUpDto dto) {
+        // 이미 가입했는지 이메일을 통해 Check
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            throw new DuplicateUserEmailException();
+        }
+        // 가입하지 않았다면, -> 유저 생성.
         User user = User.builder()
-                .email(email)
+                .nickName(dto.getNickName())
+                .bike(dto.getBike())
+                .role(dto.getRole())
+                .gender(dto.getGender())
+                .sgg(dto.getSgg())
+                .sido(dto.getSido())
+                .email(dto.getEmail())
+                .profileImg(dto.getProfileImg())
                 .build();
 
         return userRepository.save(user);
