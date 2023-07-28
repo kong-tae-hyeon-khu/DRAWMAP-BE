@@ -130,6 +130,17 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return userRepository.save(user);
     }
 
+    @Transactional
+    public User loginUser(String email) {
+        // 우리의 Access Token (JWT) 를 발급해주어야 할까..?ㅎ
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            return userOptional.get();
+        }
+        else {
+            throw new NoExistUserException("해당 유저가 존재하지 않습니다. 회원가입이 필요합니다");
+        }
+    }
 
 
 }
