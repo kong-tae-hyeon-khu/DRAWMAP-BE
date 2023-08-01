@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    include: jwt
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${LOCAL_DB_URL}
