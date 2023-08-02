@@ -74,7 +74,9 @@ public class JwtProvider {
         if (claims.get(ROLES) == null ) {
             throw new RuntimeException("역할 저장 X"); // 에러 다시 지정할 예정
         }
+
         UserDetails userDetails = userDetailsService.loadUserByUsername(claims.getSubject());
+        System.out.println(userDetails.getAuthorities());
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
@@ -88,7 +90,8 @@ public class JwtProvider {
     }
 
     public String resolveToken(HttpServletRequest request) {
-        return request.getHeader("X-AUTH-TOKEN");
+
+        return request.getHeader("Authorization");
     }
     // JWT 의 유효성 / 만료 일자 확인
     public boolean validationToken(String token) {

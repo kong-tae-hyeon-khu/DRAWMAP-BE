@@ -21,12 +21,16 @@ public class JwtAuthenticationFilter extends GenericFilter {
         String token = jwtProvider.resolveToken((HttpServletRequest) request);
 
         // 검증
-        System.out.println("token INFO");
-        System.out.println(((HttpServletRequest) request).getRequestURI());
+
+
+
 
         if (token != null && jwtProvider.validationToken(token)) {
+
             Authentication authentication = jwtProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
+
+
         }
         filterChain.doFilter(request, response);
     }
