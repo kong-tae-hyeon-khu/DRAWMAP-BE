@@ -1,9 +1,12 @@
 package com.umc.drawmap.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 import javax.servlet.http.HttpSession;
 
+import com.umc.drawmap.dto.token.TokenDto;
+import com.umc.drawmap.security.JwtProvider;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -21,14 +24,17 @@ import com.umc.drawmap.exception.userChallenge.NoExistUserException;
 import com.umc.drawmap.repository.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
 
-    public CustomOAuth2UserService(UserRepository userRepository) {
+    private final JwtProvider jwtProvider;
+    public CustomOAuth2UserService(UserRepository userRepository, JwtProvider jwtProvider) {
         this.userRepository = userRepository;
+        this.jwtProvider = jwtProvider;
     }
 
     // 유저 기본 정보 조회.
@@ -131,11 +137,16 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     @Transactional
-    public User loginUser(String email) {
-        // 우리의 Access Token (JWT) 를 발급해주어야 할까..?ㅎ
+    public TokenDto loginUser(String email) {
+
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
-            return userOptional.get();
+            // 유저에 대해 Access Token 을 줘야해.
+            User user = userOptional.get();
+            List<String> stringList = new ArrayList<>();
+            stringList.add("User");
+            TokenDto tokenDto = jwtProvider.createToken(user.getId(), stringList);
+            return tokenDto;
         }
         else {
             throw new NoExistUserException("해당 유저가 존재하지 않습니다. 회원가입이 필요합니다");

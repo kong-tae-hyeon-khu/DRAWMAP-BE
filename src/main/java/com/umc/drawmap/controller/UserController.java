@@ -1,6 +1,7 @@
 package com.umc.drawmap.controller;
 
 
+import com.umc.drawmap.dto.token.TokenDto;
 import com.umc.drawmap.dto.user.UserReqDto;
 import com.umc.drawmap.dto.user.UserResDto;
 import com.umc.drawmap.exception.BaseResponse;
@@ -115,5 +116,13 @@ public class UserController {
         KakaoUserInfoResponse userInfo = kakaoUserInfo.getUserInfo(accessToken);
         customOAuth2UserService.createUser(userInfo.getKakao_account().getEmail(), dto);
         return new BaseResponse<>("회원정보가 저장되었습니다.");
+    }
+
+    // JWT 발급 (즉, 로그인)
+    @PostMapping("/user/login")
+    public BaseResponse<TokenDto> loginUser(@RequestBody String email) {
+        System.out.println(email);
+        TokenDto tokenDto = customOAuth2UserService.loginUser(email);
+        return new BaseResponse<>(tokenDto);
     }
 }
