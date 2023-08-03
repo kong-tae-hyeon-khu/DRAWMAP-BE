@@ -1,5 +1,6 @@
 package com.umc.drawmap.service.security;
 
+import com.umc.drawmap.domain.Role;
 import com.umc.drawmap.domain.User;
 import com.umc.drawmap.dto.token.TokenReqDto;
 import com.umc.drawmap.dto.token.TokenResDto;
@@ -34,21 +35,25 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
 
     @Transactional
-    public User createUser(String email, UserReqDto.signUpDto dto) {
-        // 이미 가입했는지 이메일을 통해 Check
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isPresent()) {
-            throw new DuplicateUserEmailException();
+    public User createUser(UserReqDto.signUpDto dto) {
+
+        // 카카오 토큰으로부터 email 을 얻는 과정.
+        String access_token = dto.getKakao_access_token();
+        KakaoUserInfoResponse kakaoUserInfoResponse = kakaoUserInfo.getUserInfo(access_token);
+        KakaoAccount kakaoAccount = kakaoUserInfoResponse.getKakao_account();
+        String email = kakaoAccount.getEmail();
+
+        if(userRepository.existsByEmail(email)) {
+            throw new DuplicateUserEmailException(); // 해당 이메일의 유저가 존재.
         }
-        // 가입하지 않았다면, -> 유저 생성.
         User user = User.builder()
                 .nickName(dto.getNickName())
-                .bike(dto.getBike())
-                .role(dto.getRole())
+                .email(email)
                 .gender(dto.getGender())
+                .role(Role.ROLE_User) // 기본으로 User 로 지정.
                 .sgg(dto.getSgg())
                 .sido(dto.getSido())
-                .email(dto.getEmail())
+                .bike(dto.getBike())
                 .profileImg(dto.getProfileImg())
                 .build();
 

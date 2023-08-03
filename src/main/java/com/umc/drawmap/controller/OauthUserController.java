@@ -1,7 +1,9 @@
 package com.umc.drawmap.controller;
 
+import com.umc.drawmap.domain.User;
 import com.umc.drawmap.dto.token.TokenReqDto;
 import com.umc.drawmap.dto.token.TokenResDto;
+import com.umc.drawmap.dto.user.UserReqDto;
 import com.umc.drawmap.exception.BaseResponse;
 
 import com.umc.drawmap.service.security.CustomOAuth2UserService;
@@ -84,6 +86,12 @@ public class OauthUserController {
     public BaseResponse<TokenResDto> loginUser(@RequestBody TokenReqDto tokenReqDto) {
         TokenResDto tokenResDto = customOAuth2UserService.loginUser(tokenReqDto);
         return new BaseResponse<>(tokenResDto);
+    }
+
+    @PostMapping("/user/signup")
+    public BaseResponse<User> signUp(@RequestBody UserReqDto.signUpDto signUpDto) {
+        User user = customOAuth2UserService.createUser(signUpDto);
+        return new BaseResponse<>(user); // response dto 작업 하는 것도 좋을듯!
     }
 
 }
