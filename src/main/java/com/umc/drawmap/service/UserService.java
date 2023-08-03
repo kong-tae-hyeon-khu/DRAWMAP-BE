@@ -29,7 +29,6 @@ public class UserService extends DefaultOAuth2UserService {
     }
 
     // 유저 기본 정보 조회.
-
     public UserResDto.UserDto getUserInfo(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
 
@@ -45,7 +44,7 @@ public class UserService extends DefaultOAuth2UserService {
         return userDto;
     }
 
-    // 유저 닉네임 중복체크
+    // 유저 닉네임 중복체크 => Service 부분에서는 Boolean 으로 변경하는게 좋을 것 같다.
     public UserResDto.UserNameDto checkUserName(String nickname) {
         Optional<User> userOptional = userRepository.findByNickName(nickname);
 
@@ -61,7 +60,7 @@ public class UserService extends DefaultOAuth2UserService {
         }
     }
 
-    // 이메일 중복 체크
+    // 이메일 중복 체크 => Service 부분에서는 Boolean 으로 변경하는게 좋을 것 같다.
     public UserResDto.UserEmailDto checkUserEmail(String userEmail) {
         System.out.println(userEmail);
         if (userRepository.existsByEmail(userEmail)) {
@@ -105,44 +104,6 @@ public class UserService extends DefaultOAuth2UserService {
         return userDto;
     }
 
-    @Transactional
-    public User createUser(String email, UserReqDto.signUpDto dto) {
-        // 이미 가입했는지 이메일을 통해 Check
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isPresent()) {
-            throw new DuplicateUserEmailException();
-        }
-        // 가입하지 않았다면, -> 유저 생성.
-        User user = User.builder()
-                .nickName(dto.getNickName())
-                .bike(dto.getBike())
-                .role(dto.getRole())
-                .gender(dto.getGender())
-                .sgg(dto.getSgg())
-                .sido(dto.getSido())
-                .email(dto.getEmail())
-                .profileImg(dto.getProfileImg())
-                .build();
-
-        return userRepository.save(user);
-    }
-
-    @Transactional
-    public TokenResDto loginUser(String email) {
-
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isPresent()) {
-            // 유저에 대해 Access Token 을 줘야해.
-            User user = userOptional.get();
-            List<String> stringList = new ArrayList<>();
-            stringList.add("User");
-            TokenResDto tokenResDto = jwtProvider.createToken(user.getId(), stringList);
-            return tokenResDto;
-        }
-        else {
-            throw new NoExistUserException("해당 유저가 존재하지 않습니다. 회원가입이 필요합니다");
-        }
-    }
 
 
 }

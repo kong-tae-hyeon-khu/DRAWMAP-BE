@@ -1,3 +1,3 @@
 spring:
   jwt:
-    secret: ${AccessToken}
+    secret: ${AccessToken} # 각자 임의의 토큰 값 지정 =>  추후 통일.

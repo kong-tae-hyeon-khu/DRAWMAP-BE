@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.geolatte.geom.Simple;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +14,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -66,12 +68,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserCourse> userCourses = new ArrayList<>();
 
-    @Override
+    @Override // 유저의 역할은 한 개니까 Single List 로 정의하자. => 만약 여러 개면 별도의 Role 테이블이 필요할 것!
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<String> roleList = new ArrayList<>();
-        roleList.add("ROLE_User"); // Only User
-        return roleList.stream().map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+        GrantedAuthority authority = new SimpleGrantedAuthority(getRole().name());
+        return Collections.singletonList(authority);
     }
     @Override
     public String getPassword() {
@@ -110,9 +110,6 @@ public class User implements UserDetails {
 
 
     public User() {};
-
-    // Setter
-
 
     public User updateUserChallenge(UserChallenge userChallenge){
         this.userChallenge = userChallenge;
