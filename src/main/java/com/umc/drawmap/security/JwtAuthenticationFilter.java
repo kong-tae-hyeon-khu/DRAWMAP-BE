@@ -1,5 +1,6 @@
 package com.umc.drawmap.security;
 
+import com.umc.drawmap.security.jwt.JwtProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 

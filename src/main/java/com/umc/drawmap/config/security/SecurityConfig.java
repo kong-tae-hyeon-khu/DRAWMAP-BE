@@ -1,7 +1,7 @@
-package com.umc.drawmap.config;
+package com.umc.drawmap.config.security;
 
 import com.umc.drawmap.security.JwtAuthenticationFilter;
-import com.umc.drawmap.security.JwtProvider;
+import com.umc.drawmap.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -12,7 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(securedEnabled = true,prePostEnabled = true)
 public class SecurityConfig {
@@ -53,9 +53,11 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST,"/user/login").permitAll()
                 .antMatchers(HttpMethod.GET, "/user").permitAll()
                 .antMatchers(HttpMethod.GET, "/callback/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/oauth/kakao/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/oauth2/kakao").permitAll()
                 .antMatchers(PERMIT_URL_ARRAY).permitAll() // Swagger 를 제외시키기 위해서.
                 .anyRequest().hasRole("User")
+
+                // 로그인 안한 사용자도 접근할 수 있는 정보가 있지 않을까??
 
                 .and()
                 .exceptionHandling()

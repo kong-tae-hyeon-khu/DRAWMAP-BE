@@ -1,19 +1,10 @@
 package com.umc.drawmap.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
-import javax.servlet.http.HttpSession;
-
-import com.umc.drawmap.dto.token.TokenDto;
-import com.umc.drawmap.security.JwtProvider;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import com.umc.drawmap.dto.token.TokenResDto;
+import com.umc.drawmap.security.jwt.JwtProvider;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import com.umc.drawmap.domain.User;
 import com.umc.drawmap.dto.user.UserReqDto;
@@ -28,11 +19,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+public class UserService extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
 
     private final JwtProvider jwtProvider;
-    public CustomOAuth2UserService(UserRepository userRepository, JwtProvider jwtProvider) {
+    public UserService(UserRepository userRepository, JwtProvider jwtProvider) {
         this.userRepository = userRepository;
         this.jwtProvider = jwtProvider;
     }
@@ -137,7 +128,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     @Transactional
-    public TokenDto loginUser(String email) {
+    public TokenResDto loginUser(String email) {
 
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
@@ -145,8 +136,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             User user = userOptional.get();
             List<String> stringList = new ArrayList<>();
             stringList.add("User");
-            TokenDto tokenDto = jwtProvider.createToken(user.getId(), stringList);
-            return tokenDto;
+            TokenResDto tokenResDto = jwtProvider.createToken(user.getId(), stringList);
+            return tokenResDto;
         }
         else {
             throw new NoExistUserException("해당 유저가 존재하지 않습니다. 회원가입이 필요합니다");
