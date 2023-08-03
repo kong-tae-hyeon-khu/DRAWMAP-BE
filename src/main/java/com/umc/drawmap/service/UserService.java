@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 import com.umc.drawmap.dto.token.TokenResDto;
 import com.umc.drawmap.security.jwt.JwtProvider;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.stereotype.Service;
 import com.umc.drawmap.domain.User;
@@ -29,8 +32,22 @@ public class UserService extends DefaultOAuth2UserService {
     }
 
     // 유저 기본 정보 조회.
-    public UserResDto.UserDto getUserInfo(Long userId) {
-        Optional<User> userOptional = userRepository.findById(userId);
+    public UserResDto.UserDto getUserInfo() {
+
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+
+
+        if (authentication == null || !authentication.isAuthenticated() || !(authentication.getPrincipal() instanceof UserDetails)) {
+            System.out.println("사용자가 인증되지 않았거나, 인증 주체가 올바르지 않습니다.");
+            throw new NoExistUserException("사용자가 인증되지 않았거나, 인증 주체가 올바르지 않습니다.");
+        }
+
+        String username = ((UserDetails) authentication.getPrincipal()).getUsername();
+        Optional<User> userOptional = userRepository.findById(Long.parseLong(username));
+
+
 
         if (!userOptional.isPresent()) {
             throw new NoExistUserException("해당 아이디의 유저가 존재하지 않습니다.");

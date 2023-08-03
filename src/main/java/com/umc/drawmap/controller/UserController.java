@@ -15,9 +15,9 @@ public class UserController {
         this.userService = userService;
     }
     // 유저 기본 정보 조회.
-    @GetMapping("/user/{userId}")
-    public BaseResponse<UserResDto.UserDto> getUser(@PathVariable Long userId) {
-        return new BaseResponse<>(userService.getUserInfo(userId));
+    @GetMapping("/user")
+    public BaseResponse<UserResDto.UserDto> getUser() {
+        return new BaseResponse<>(userService.getUserInfo());
     }
 
     // 닉네임 중복 확인
