@@ -1,8 +1,7 @@
-package com.umc.drawmap.security;
+package com.umc.drawmap.security.jwt;
 
 
-import com.auth0.jwt.JWT;
-import com.umc.drawmap.dto.token.TokenDto;
+import com.umc.drawmap.dto.token.TokenResDto;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +9,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -38,7 +36,7 @@ public class JwtProvider {
     }
 
     // JWT 생성
-    public TokenDto createToken(Long userId, List<String> roles) {
+    public TokenResDto createToken(Long userId, List<String> roles) {
         // UserId & Role 삽입.
         Claims claims = Jwts.claims().setSubject(String.valueOf(userId));
         claims.put(ROLES, roles);
@@ -59,7 +57,7 @@ public class JwtProvider {
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
 
-        return TokenDto.builder()
+        return TokenResDto.builder()
                 .grantType("bearer")
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
