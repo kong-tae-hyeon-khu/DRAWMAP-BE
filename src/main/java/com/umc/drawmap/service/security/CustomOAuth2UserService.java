@@ -46,8 +46,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if(userRepository.existsByEmail(email)) {
             throw new DuplicateUserEmailException(); // 해당 이메일의 유저가 존재.
         }
+        String nickName = dto.getNickName();
+        if(dto.getNickName() !=null){
+            nickName = kakaoUserInfoResponse.getProperties().getNickname();
+        }
         User user = User.builder()
-                .nickName(dto.getNickName())
+                .nickName(nickName)
                 .email(email)
                 .gender(dto.getGender())
                 .role(Role.ROLE_User) // 기본으로 User 로 지정.
