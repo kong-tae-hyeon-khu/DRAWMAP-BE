@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import java.time.Duration;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -140,9 +139,6 @@ public class JwtProvider {
                 .refreshTokenExpireDate(refreshTokenValidMillisecond)
                 .build();
     }
-
-
-
 
 
 }
