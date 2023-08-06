@@ -48,10 +48,6 @@ public class User implements UserDetails {
     @Column(name="created_at")
     private LocalDateTime createdAt;
 
-    // Token
-    @Column(name = "refresh_token")
-    private String refresh_token;
-
     @Column(name = "sido")
     private String sido;
 
