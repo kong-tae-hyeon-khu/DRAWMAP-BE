@@ -34,9 +34,9 @@ public class UserController {
     }
 
     // 유저 정보 수정
-    @PatchMapping("/user/{userId}")
-    public BaseResponse<UserResDto.UserDto> updateUser(@PathVariable Long userId, @RequestBody UserReqDto.updateDto dto) {
-        return new BaseResponse<>(userService.updateUser(userId, dto));
+    @PatchMapping("/user")
+    public BaseResponse<UserResDto.UserDto> updateUser(@RequestBody UserReqDto.updateDto dto) {
+        return new BaseResponse<>(userService.updateUser(dto));
     }
 
 }

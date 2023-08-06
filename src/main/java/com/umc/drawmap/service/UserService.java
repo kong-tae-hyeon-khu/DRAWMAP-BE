@@ -25,10 +25,8 @@ import java.util.Optional;
 public class UserService extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
 
-    private final JwtProvider jwtProvider;
-    public UserService(UserRepository userRepository, JwtProvider jwtProvider) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.jwtProvider = jwtProvider;
     }
 
     // 유저 기본 정보 조회.
@@ -92,14 +90,25 @@ public class UserService extends DefaultOAuth2UserService {
     }
 
     // 유저 기본 정보 수정
-    public UserResDto.UserDto updateUser(Long userId, UserReqDto.updateDto dto) {
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (!userOptional.isPresent()) {
-            throw new NoExistUserException("해당 유저가 존재하지 않습니다.");
+    public UserResDto.UserDto updateUser(UserReqDto.updateDto dto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+
+
+        if (authentication == null || !authentication.isAuthenticated() || !(authentication.getPrincipal() instanceof UserDetails)) {
+            System.out.println("사용자가 인증되지 않았거나, 인증 주체가 올바르지 않습니다.");
+            throw new NoExistUserException("사용자가 인증되지 않았거나, 인증 주체가 올바르지 않습니다.");
         }
+
+        String username = ((UserDetails) authentication.getPrincipal()).getUsername();
+        Optional<User> userOptional = userRepository.findById(Long.parseLong(username));
+        if (!userOptional.isPresent()) {
+            throw new NoExistUserException("해당 아이디의 유저가 존재하지 않습니다.");
+        }
+
         User user = userOptional.get();
 
-        // 이메일 중복 검사.
+        // 닉네임 중복 검사.
         if (userRepository.findByNickName(dto.getNickName()).isPresent()) {
             throw new DuplicateUserNickNameException();
         }
@@ -113,7 +122,7 @@ public class UserService extends DefaultOAuth2UserService {
         userRepository.save(user);
 
         UserResDto.UserDto userDto = UserResDto.UserDto.builder()
-                .userId(userId)
+                .userId(Long.parseLong(username))
                 .nickName(dto.getNickName())
                 .profileImg(dto.getProfileImg())
                 .build();
