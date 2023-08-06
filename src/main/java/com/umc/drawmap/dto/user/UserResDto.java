@@ -1,6 +1,7 @@
 package com.umc.drawmap.dto.user;
 
 
+import com.umc.drawmap.domain.Role;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -41,5 +42,21 @@ public class UserResDto {
         private Integer expiresIn;
         private String refreshToken;
         private Integer refreshTokenExpiresIn;
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class PostSignDto{
+        private String tokenType;
+        private String accessToken;
+        private String nickName;
+        private String email;
+        private Role role;
+        private String sido;
+        private String sgg;
+        private String bike;
+        private String profileImg;
     }
 }

@@ -4,6 +4,7 @@ import com.umc.drawmap.domain.User;
 import com.umc.drawmap.dto.token.TokenReqDto;
 import com.umc.drawmap.dto.token.TokenResDto;
 import com.umc.drawmap.dto.user.UserReqDto;
+import com.umc.drawmap.dto.user.UserResDto;
 import com.umc.drawmap.exception.BaseResponse;
 
 import com.umc.drawmap.service.security.CustomOAuth2UserService;
@@ -20,6 +21,11 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -83,15 +89,27 @@ public class OauthUserController {
 
     // KaKao Access Token => 로그인 => JWT 발급.
     @PostMapping("/user/login")
-    public BaseResponse<TokenResDto> loginUser(@RequestBody TokenReqDto tokenReqDto) {
+    public BaseResponse<TokenResDto> loginUser(@RequestBody TokenReqDto.accessReqDto tokenReqDto) {
         TokenResDto tokenResDto = customOAuth2UserService.loginUser(tokenReqDto);
         return new BaseResponse<>(tokenResDto);
     }
 
     @PostMapping("/user/signup")
-    public BaseResponse<User> signUp(@RequestBody UserReqDto.signUpDto signUpDto) {
-        User user = customOAuth2UserService.createUser(signUpDto);
+    public BaseResponse<UserResDto.PostSignDto> signUp(@RequestBody UserReqDto.signUpDto signUpDto) {
+        UserResDto.PostSignDto user = customOAuth2UserService.createUser(signUpDto);
         return new BaseResponse<>(user); // response dto 작업 하는 것도 좋을듯!
     }
+
+    @PostMapping("/user/logout")
+    public BaseResponse<String> logoutUser(@RequestBody TokenReqDto.tokenReqDto token){
+        customOAuth2UserService.logoutUser(token);
+        return new BaseResponse<>("로그아웃이 완료되었습니다.");
+    }
+
+    @PostMapping("/reissue")
+    public BaseResponse<TokenResDto> reissueToken(@RequestBody TokenReqDto.tokenReqDto token){
+        return new BaseResponse<>(customOAuth2UserService.reissue(token));
+    }
+
 
 }

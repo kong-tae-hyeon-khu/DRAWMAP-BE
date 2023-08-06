@@ -1,27 +1,25 @@
 package com.umc.drawmap.security.jwt;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.umc.drawmap.dto.token.TokenResDto;
-import com.umc.drawmap.exception.ForbiddenException;
 import com.umc.drawmap.security.KakaoAccount;
-import com.umc.drawmap.security.RedisUtil;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletRequest;
+import java.time.Duration;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
@@ -35,7 +33,8 @@ public class JwtProvider {
     private final Long refreshTokenValidMillisecond = 14 * 24 * 60 * 60 * 1000L; // 24시간
 
     private final UserDetailsService userDetailsService;
-    private final RedisUtil redisUtil;
+
+    private final KakaoAccount kakaoAccount;
 
     @PostConstruct
     protected void init() {
@@ -64,11 +63,12 @@ public class JwtProvider {
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
 
+
         return TokenResDto.builder()
                 .grantType("bearer")
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .accessTokenExpireDate(accessTokenValidMillisecond)
+                .refreshTokenExpireDate(refreshTokenValidMillisecond)
                 .build();
     }
 
@@ -109,12 +109,40 @@ public class JwtProvider {
         }
     }
 
-    // Refresh Token에서 꺼낸 유저 email이 Redis에 존재하는지 확인 후 AccessToken 재발급
-    public TokenResDto reissueAccessToken(KakaoAccount kakaoAccount) throws JsonProcessingException{
-        String refreshInRedis = redisUtil.getValues(kakaoAccount.getEmail());
-        if(Objects.isNull(refreshInRedis)) throw new ForbiddenException("인증 정보가 만료되었습니다.");
-        Subject accessTokenSubject = Subject.
+    // Token 유효시간
+    public Long getExpiration(String accessToken){
+        Date expiration = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(accessToken).getBody().getExpiration();
+        Long now = new Date().getTime();
+        return (expiration.getTime() - now);
     }
+
+    public TokenResDto Token(Authentication authentication){
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        long now = (new Date()).getTime();
+
+        String accessToken = Jwts.builder()
+                .setSubject(authentication.getName())
+                .claim("auth", authorities)
+                .setExpiration(new Date(now + accessTokenValidMillisecond))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+        String refreshToken = Jwts.builder()
+                .setExpiration(new Date(now + refreshTokenValidMillisecond))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+        return TokenResDto.builder()
+                .grantType("Bearer")
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .refreshTokenExpireDate(refreshTokenValidMillisecond)
+                .build();
+    }
+
+
+
 
 
 }
