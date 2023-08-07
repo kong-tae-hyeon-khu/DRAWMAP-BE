@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 
 @Slf4j
@@ -25,9 +26,10 @@ public class UserCourseController {
     // 등록
     @PostMapping("/usercourse")
     public BaseResponse<String> createUserCourse(@RequestPart(value = "files", required = false) List<MultipartFile> files,
-                                                @ModelAttribute(value= "request") UserCourseReqDto.CreateUserCourseDto request
+                                                @ModelAttribute(value= "request") UserCourseReqDto.CreateUserCourseDto request,
+                                                 Principal principal
     ) throws IOException {
-        UserCourse userCourse = userCourseService.create(files, request);
+        UserCourse userCourse = userCourseService.create(files, request, principal);
         return new BaseResponse<>("유저코스 등록 완료");
     }
 

@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,8 +33,8 @@ public class UserCourseService {
 
     private final ChallengeRepository challengeRepository;
     @Transactional
-    public UserCourse create(List<MultipartFile> files, UserCourseReqDto.CreateUserCourseDto request) throws IOException {
-        User user = userRepository.findById(request.getUserId())
+    public UserCourse create(List<MultipartFile> files, UserCourseReqDto.CreateUserCourseDto request, Principal principal) throws IOException {
+        User user = userRepository.findByNickName(principal.getName())
                 .orElseThrow(()-> new NotFoundException("유저를 찾을 수 없습니다."));
 
         UserCourse userCourse = UserCourse.builder()
