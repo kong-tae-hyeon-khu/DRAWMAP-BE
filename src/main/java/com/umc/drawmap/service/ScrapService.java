@@ -14,8 +14,10 @@ import com.umc.drawmap.repository.ScrapRepository;
 import com.umc.drawmap.repository.UserCourseRepository;
 import com.umc.drawmap.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,8 +36,8 @@ public class ScrapService {
     }
 
     // User - Scrap
-    public ScrapResDto.ScrapDto addUserCourseScrap(ScrapReqDto.ScrapAddDto dto) {
-        Optional<User> userOptional = userRepository.findById(dto.getUser_id());
+    public ScrapResDto.ScrapDto addUserCourseScrap(ScrapReqDto.ScrapAddDto dto, Principal principal) {
+        Optional<User> userOptional = userRepository.findByNickName(principal.getName());
         Optional<UserCourse> userCourseOptional = userCourseRepository.findById(dto.getUser_course_id());
 
         if (!userOptional.isPresent() || !userCourseOptional.isPresent()) {
@@ -65,8 +67,8 @@ public class ScrapService {
 
     }
 
-    public ScrapResDto.ScrapDto addChallengeScrap(ScrapReqDto.ScrapAddDto dto) {
-        Optional<User> userOptional = userRepository.findById(dto.getUser_id());
+    public ScrapResDto.ScrapDto addChallengeScrap(ScrapReqDto.ScrapAddDto dto, Principal principal) {
+        Optional<User> userOptional = userRepository.findByNickName(principal.getName());
         Optional<Challenge> challengeOptional = challengeRepository.findById(dto.getChallenge_id());
 
         if (!userOptional.isPresent() || !challengeOptional.isPresent()) {
