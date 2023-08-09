@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ScrapController {
-    private ScrapService scrapService;
+    private final ScrapService scrapService;
     public ScrapController(ScrapService scrapService) {
         this.scrapService = scrapService;
     }
@@ -24,12 +24,12 @@ public class ScrapController {
     }
 
 
-    @GetMapping("/scrap/{userId}")
-    public BaseResponse<ScrapResDto.ScrapListDto> getScrap(@PathVariable Long userId) {
-        return new BaseResponse<>(scrapService.getMyScrap(userId));
+    @GetMapping("/scrap")
+    public BaseResponse<ScrapResDto.ScrapListDto> getScrap() {
+        return new BaseResponse<>(scrapService.getMyScrap());
     }
-    @DeleteMapping("/scrap/{userId}")  // 쿼리 스트링으로 유저코스 또는 도전코스를 입력받아야한다.
-    public BaseResponse<ScrapResDto.ScrapDto> deleteCourseScrap(@PathVariable Long userId, Long courseId, Long challengeId) {
-        return new BaseResponse<>(scrapService.deleteMyScrap(userId, courseId, challengeId));
+    @DeleteMapping("/scrap")  // 쿼리 스트링으로 유저코스 또는 도전코스를 입력받아야한다.
+    public BaseResponse<ScrapResDto.ScrapDto> deleteCourseScrap(Long courseId, Long challengeId) {
+        return new BaseResponse<>(scrapService.deleteMyScrap(courseId, challengeId));
     }
 }

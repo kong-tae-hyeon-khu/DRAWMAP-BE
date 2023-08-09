@@ -11,6 +11,9 @@ import com.umc.drawmap.exception.userChallenge.NoExistUserException;
 import com.umc.drawmap.repository.ChallengeRepository;
 import com.umc.drawmap.repository.UserChallengeRepository;
 import com.umc.drawmap.repository.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,15 +34,18 @@ public class UserChallengeService {
     // 유저 도전 등록(인증)
     public UserChallengeResDto.GetUserChallenge userChallengeAdd(UserChallengeReqDto.UserChallengeAddDto dto) {
 
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = ((UserDetails) authentication.getPrincipal()).getUsername();
+        Long userId = Long.parseLong(username);
+
         // 파라미터 검증
-        if (dto.getUserId() == null) {
-            throw new IllegalArgumentException("User ID cannot be null");
-        }
+
         if (dto.getChallengeId() == null) {
             throw new IllegalArgumentException("Challenge ID cannot be null");
         }
 
-        Optional<User> userOptional = userRepository.findById(dto.getUserId());
+        Optional<User> userOptional = userRepository.findById(userId);
         Optional<Challenge> challengeOptional = challengeRepository.findById(dto.getChallengeId());
 
         if (!userOptional.isPresent()) {
@@ -86,9 +92,14 @@ public class UserChallengeService {
         return resDto;
     }
     // 유저 도전 수정!
-    public UserChallengeResDto.GetUserChallenge userChallengeUpdate(Long userId, Long challengeId ,UserChallengeReqDto.UserChallengeUpdateDto dto) {
+    public UserChallengeResDto.GetUserChallenge userChallengeUpdate(Long challengeId ,UserChallengeReqDto.UserChallengeUpdateDto dto) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = ((UserDetails) authentication.getPrincipal()).getUsername();
+        Long userId = Long.parseLong(username);
 
         Optional<User> userOptional = userRepository.findById(userId);
+
         Optional<Challenge> challengeOptional = challengeRepository.findById(challengeId);
 
         if (!userOptional.isPresent()) {
@@ -143,8 +154,12 @@ public class UserChallengeService {
     }
 
     // 특정 유저 도전 조회
-    public List<UserChallengeResDto.GetUserChallenge> aUserChallengeList(Long id) {
-        Optional<User> userOptional = userRepository.findById(id);
+    public List<UserChallengeResDto.GetUserChallenge> aUserChallengeList() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = ((UserDetails) authentication.getPrincipal()).getUsername();
+        Long userId = Long.parseLong(username);
+
+        Optional<User> userOptional = userRepository.findById(userId);
         if (!userOptional.isPresent()) {
             throw new NoExistUserException("해당 유저가 존재하지 않습니다.");
         }
@@ -167,7 +182,11 @@ public class UserChallengeService {
         return getUserChallengeArrayList;
     }
     // 유저 도전 삭제.
-    public Boolean userChallengeDelete(Long userId, Long courseId) {
+    public Boolean userChallengeDelete(Long courseId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = ((UserDetails) authentication.getPrincipal()).getUsername();
+        Long userId = Long.parseLong(username);
+
         Optional<User> userOptional = userRepository.findById(userId);
         Optional<Challenge> challengeOptional = challengeRepository.findById(courseId);
 
