@@ -10,6 +10,7 @@ import com.umc.drawmap.service.security.CustomOAuth2UserService;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -24,7 +25,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestController
+
 public class OauthUserController {
+
     private final CustomOAuth2UserService customOAuth2UserService;
 
     public OauthUserController(CustomOAuth2UserService customOAuth2UserService) {
@@ -36,6 +39,9 @@ public class OauthUserController {
     @GetMapping("/oauth2/kakao")
     public String getAccessToken(@RequestParam("code") String code) throws ParseException {
         System.out.println("code = " + code);
+
+
+
 
         // 1. header 생성
         HttpHeaders httpHeaders = new HttpHeaders();

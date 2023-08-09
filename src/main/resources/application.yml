@@ -46,6 +46,23 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
+cloud:
+  aws:
+    s3:
+      bucket: draw-map
+    credentials:
+      access-key: ${ACCESS_KEY}
+      secret-key: ${SECRET_KEY}
+    region:
+      static: us-east-1
+      auto: false
+    stack:
+      auto: false
+
+
+
+
+
 
 
 server:
