@@ -23,8 +23,6 @@ public class JwtAuthenticationFilter extends GenericFilter {
 
         // 검증
 
-
-
         if (token != null && jwtProvider.validationToken(token)) {
 
             Authentication authentication = jwtProvider.getAuthentication(token);

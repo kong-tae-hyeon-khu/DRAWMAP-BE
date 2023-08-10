@@ -15,28 +15,28 @@ import java.security.Principal;
 @RestController
 @Slf4j
 public class ScrapController {
-    private ScrapService scrapService;
+    private final ScrapService scrapService;
     public ScrapController(ScrapService scrapService) {
         this.scrapService = scrapService;
     }
 
 
-    @PostMapping("/scrap")
-    public BaseResponse<ScrapResDto.ScrapDto> addScrap(Principal principal, @RequestBody ScrapReqDto.ScrapAddDto dto) {
-        log.info(principal.getName());
+    @PostMapping("/scrap") // 혜진님 여기 principal 받는 부분을 제가 잠시 지웠어요!!
+    public BaseResponse<ScrapResDto.ScrapDto> addScrap(@RequestBody ScrapReqDto.ScrapAddDto dto) {
+
         if (dto.getChallenge_id() == null) {
-            return new BaseResponse<>(scrapService.addUserCourseScrap(dto, principal));
+            return new BaseResponse<>(scrapService.addUserCourseScrap(dto));
         }
-        return new BaseResponse<>(scrapService.addChallengeScrap(dto, principal));
+        return new BaseResponse<>(scrapService.addChallengeScrap(dto));
     }
 
 
-    @GetMapping("/scrap/{userId}")
-    public BaseResponse<ScrapResDto.ScrapListDto> getScrap(@PathVariable Long userId) {
-        return new BaseResponse<>(scrapService.getMyScrap(userId));
+    @GetMapping("/scrap")
+    public BaseResponse<ScrapResDto.ScrapListDto> getScrap() {
+        return new BaseResponse<>(scrapService.getMyScrap());
     }
-    @DeleteMapping("/scrap/{userId}")  // 쿼리 스트링으로 유저코스 또는 도전코스를 입력받아야한다.
-    public BaseResponse<ScrapResDto.ScrapDto> deleteCourseScrap(@PathVariable Long userId, Long courseId, Long challengeId) {
-        return new BaseResponse<>(scrapService.deleteMyScrap(userId, courseId, challengeId));
+    @DeleteMapping("/scrap")  // 쿼리 스트링으로 유저코스 또는 도전코스를 입력받아야한다.
+    public BaseResponse<ScrapResDto.ScrapDto> deleteCourseScrap(Long courseId, Long challengeId) {
+        return new BaseResponse<>(scrapService.deleteMyScrap(courseId, challengeId));
     }
 }

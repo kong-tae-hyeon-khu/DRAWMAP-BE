@@ -3,7 +3,11 @@ package com.umc.drawmap.security.jwt;
 
 import com.umc.drawmap.domain.User;
 import com.umc.drawmap.dto.token.TokenResDto;
+import com.umc.drawmap.exception.NotFoundException;
+import com.umc.drawmap.repository.UserRepository;
 import com.umc.drawmap.security.KakaoAccount;
+import com.umc.drawmap.security.KakaoUserInfo;
+import com.umc.drawmap.security.KakaoUserInfoResponse;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +38,8 @@ public class JwtProvider {
     private final UserDetailsService userDetailsService;
 
     private final KakaoAccount kakaoAccount;
+    private final KakaoUserInfo kakaoUserInfo;
+    private final UserRepository userRepository;
 
     @PostConstruct
     protected void init() {
@@ -91,21 +97,8 @@ public class JwtProvider {
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
-        } catch (JwtException e) {
-            e.printStackTrace();
-            return null;
         }
     }
-
-
-
-//    private Claims parseClaims(String token) {
-//        try {
-//            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
-//        } catch (ExpiredJwtException e){
-//            return e.getClaims();
-//        }
-//    }
 
     public String resolveToken(HttpServletRequest request) {
 

@@ -11,6 +11,7 @@ import com.umc.drawmap.service.security.CustomOAuth2UserService;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -31,7 +32,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestController
+
 public class OauthUserController {
+
     private final CustomOAuth2UserService customOAuth2UserService;
 
     public OauthUserController(CustomOAuth2UserService customOAuth2UserService) {
@@ -43,6 +46,9 @@ public class OauthUserController {
     @GetMapping("/oauth2/kakao")
     public String getAccessToken(@RequestParam("code") String code) throws ParseException {
         System.out.println("code = " + code);
+
+
+
 
         // 1. header 생성
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -96,8 +102,8 @@ public class OauthUserController {
     }
 
     @PostMapping("/user/signup")
-    public BaseResponse<UserResDto.PostSignDto> signUp(Principal principal, @RequestBody UserReqDto.signUpDto signUpDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        UserResDto.PostSignDto user = customOAuth2UserService.createUser(signUpDto, httpServletRequest, httpServletResponse);
+    public BaseResponse<UserResDto.PostSignDto> signUp(@RequestBody UserReqDto.signUpDto signUpDto) {
+        UserResDto.PostSignDto user = customOAuth2UserService.createUser(signUpDto);
         return new BaseResponse<>(user); // response dto 작업 하는 것도 좋을듯!
     }
 

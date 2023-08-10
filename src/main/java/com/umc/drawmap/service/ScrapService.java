@@ -14,6 +14,10 @@ import com.umc.drawmap.repository.ScrapRepository;
 import com.umc.drawmap.repository.UserCourseRepository;
 import com.umc.drawmap.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -36,8 +40,14 @@ public class ScrapService {
     }
 
     // User - Scrap
-    public ScrapResDto.ScrapDto addUserCourseScrap(ScrapReqDto.ScrapAddDto dto, Principal principal) {
-        Optional<User> userOptional = userRepository.findById(Long.valueOf(principal.getName()));
+    public ScrapResDto.ScrapDto addUserCourseScrap(ScrapReqDto.ScrapAddDto dto) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = ((UserDetails)authentication.getPrincipal()).getUsername();
+        Long userId = Long.parseLong(username);
+
+        Optional<User> userOptional = userRepository.findById(userId);
+
         Optional<UserCourse> userCourseOptional = userCourseRepository.findById(dto.getUser_course_id());
 
         if (!userOptional.isPresent() || !userCourseOptional.isPresent()) {
@@ -58,7 +68,7 @@ public class ScrapService {
         userCourseRepository.save(userCourse);
         ScrapResDto.ScrapDto resDto = ScrapResDto.ScrapDto.builder()
                 .user_courseId(dto.getUser_course_id())
-                .userId(dto.getUser_id())
+                .userId(userId)
                 .message("스크랩 성공")
                 .build();
 
@@ -67,8 +77,15 @@ public class ScrapService {
 
     }
 
-    public ScrapResDto.ScrapDto addChallengeScrap(ScrapReqDto.ScrapAddDto dto, Principal principal) {
-        Optional<User> userOptional = userRepository.findByNickName(principal.getName());
+
+    public ScrapResDto.ScrapDto addChallengeScrap(ScrapReqDto.ScrapAddDto dto) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = ((UserDetails)authentication.getPrincipal()).getUsername();
+        Long userId = Long.parseLong(username);
+
+        Optional<User> userOptional = userRepository.findById(userId);
+
         Optional<Challenge> challengeOptional = challengeRepository.findById(dto.getChallenge_id());
 
         if (!userOptional.isPresent() || !challengeOptional.isPresent()) {
@@ -93,7 +110,7 @@ public class ScrapService {
         challengeRepository.save(challenge);
 
         ScrapResDto.ScrapDto resDto = ScrapResDto.ScrapDto.builder()
-                .userId(dto.getUser_id())
+                .userId(userId)
                 .challengeId(dto.getChallenge_id())
                 .message("스크랩 성공")
                 .build();
@@ -102,7 +119,11 @@ public class ScrapService {
     }
 
 
-    public ScrapResDto.ScrapListDto getMyScrap(Long userId) {
+    public ScrapResDto.ScrapListDto getMyScrap() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = ((UserDetails)authentication.getPrincipal()).getUsername();
+        Long userId = Long.parseLong(username);
 
         Optional<User> user = userRepository.findById(userId);
         if (!user.isPresent()) {
@@ -139,7 +160,12 @@ public class ScrapService {
 
     }
 
-    public ScrapResDto.ScrapDto deleteMyScrap(Long userId, Long courseId, Long challengeId) {
+    public ScrapResDto.ScrapDto deleteMyScrap(Long courseId, Long challengeId) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = ((UserDetails)authentication.getPrincipal()).getUsername();
+        Long userId = Long.parseLong(username);
+
         Optional<User> userOptional = userRepository.findById(userId);
         if (courseId == null) {
             Optional<Challenge> challengeOptional = challengeRepository.findById(challengeId);
