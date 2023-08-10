@@ -3,7 +3,9 @@ package com.umc.drawmap.config.security;
 import com.umc.drawmap.security.JwtAuthenticationFilter;
 import com.umc.drawmap.security.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtProvider jwtProvider;
+    private final RedisTemplate redisTemplate;
 
     private static final String[] PERMIT_URL_ARRAY = {
             /* swagger v2 */
@@ -64,7 +67,7 @@ public class SecurityConfig {
                 .accessDeniedHandler(new CustomAccessDeniedHandler())
 
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider, redisTemplate), UsernamePasswordAuthenticationFilter.class);
 
 
 

@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.codec.binary.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,7 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,28 +27,40 @@ public class S3FileService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public String upload(MultipartFile file) { // 더 수정하기 (컨트롤러 , DTO, DB)
+    public String upload(List<MultipartFile> files) { // 더 수정하기 (컨트롤러 , DTO, DB)
 
         // S3 에 저장 되는 파일 이름은  업로드 시각 + 유저 이름 으로 하자.
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userId = ((UserDetails)authentication.getPrincipal()).getUsername();
+        String userId = ((UserDetails) authentication.getPrincipal()).getUsername();
+        StringBuilder resultBuilder = new StringBuilder();
 
-        try {
-            String nowTime = new Date().toString();
+        if (files == null) {
+            return "";
+        }
 
+        for (MultipartFile file : files) {
+            try (InputStream inputStream = file.getInputStream()) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String nowTime = dateFormat.format(new Date());
 
-            String fileName = nowTime + userId;
+                String fileName = nowTime + " " + userId;
 
-            ObjectMetadata fileMetaData = new ObjectMetadata();
+                ObjectMetadata fileMetaData = new ObjectMetadata();
+                fileMetaData.setContentType(file.getContentType());
+                fileMetaData.setContentLength(file.getSize());
 
-            fileMetaData.setContentType(file.getContentType());
-            fileMetaData.setContentLength(file.getSize());
+                amazonS3Client.putObject(bucket, fileName, inputStream, fileMetaData);
+                resultBuilder.append("https://draw-map.s3.amazonaws.com/").append(fileName).append(",");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
 
-            PutObjectResult putObjectResult = amazonS3Client.putObject(bucket, fileName, file.getInputStream(), fileMetaData);
-            return "https://draw-map.s3.amazonaws.com/"+ fileName;
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } return "Fail";
+        if (resultBuilder.length() > 0) {
+            resultBuilder.deleteCharAt(resultBuilder.length() - 1); // 마지막 쉼표 제거
+        }
+
+        String result = resultBuilder.toString();
+        return result;
     }
-
 }
