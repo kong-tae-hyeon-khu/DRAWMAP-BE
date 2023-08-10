@@ -14,11 +14,14 @@ import com.umc.drawmap.repository.ScrapRepository;
 import com.umc.drawmap.repository.UserCourseRepository;
 import com.umc.drawmap.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +40,7 @@ public class ScrapService {
     }
 
     // User - Scrap
+//<<<<<<< HEAD
     public ScrapResDto.ScrapDto addUserCourseScrap(ScrapReqDto.ScrapAddDto dto) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -44,6 +48,10 @@ public class ScrapService {
         Long userId = Long.parseLong(username);
 
         Optional<User> userOptional = userRepository.findById(userId);
+//=======
+//    public ScrapResDto.ScrapDto addUserCourseScrap(ScrapReqDto.ScrapAddDto dto, Principal principal) {
+//        Optional<User> userOptional = userRepository.findByNickName(principal.getName());
+//>>>>>>> 7f6153b23248e9eb1c51f7d05ad7686408686bf2
         Optional<UserCourse> userCourseOptional = userCourseRepository.findById(dto.getUser_course_id());
 
         if (!userOptional.isPresent() || !userCourseOptional.isPresent()) {
@@ -73,6 +81,7 @@ public class ScrapService {
 
     }
 
+
     public ScrapResDto.ScrapDto addChallengeScrap(ScrapReqDto.ScrapAddDto dto) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -80,6 +89,10 @@ public class ScrapService {
         Long userId = Long.parseLong(username);
 
         Optional<User> userOptional = userRepository.findById(userId);
+//=======
+//    public ScrapResDto.ScrapDto addChallengeScrap(ScrapReqDto.ScrapAddDto dto, Principal principal) {
+//        Optional<User> userOptional = userRepository.findByNickName(principal.getName());
+//>>>>>>> 7f6153b23248e9eb1c51f7d05ad7686408686bf2
         Optional<Challenge> challengeOptional = challengeRepository.findById(dto.getChallenge_id());
 
         if (!userOptional.isPresent() || !challengeOptional.isPresent()) {
