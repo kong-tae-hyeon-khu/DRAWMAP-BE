@@ -40,15 +40,11 @@ public class OauthUserController {
         this.customOAuth2UserService = customOAuth2UserService;
     }
 
-
-    // 카카오 로그인.
-    @GetMapping("/oauth2/kakao")
-    public String getAccessToken(@RequestParam("code") String code) throws ParseException {
-        System.out.println("code = " + code);
-
-
-
-
+    // 카카오 토큰을 가져 오는 과정을 하나로 합쳐 두었습니다.
+    @ResponseBody
+    @GetMapping("/callback")
+    public String kakaoCallback(@RequestParam String code) throws ParseException {
+        System.out.println(code);
         // 1. header 생성
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded;charset=utf-8");
@@ -83,14 +79,6 @@ public class OauthUserController {
         token.put("refresh_token", refreshToken);
 
         return token.toString();
-    }
-    // 인가코드 받아오기
-    @ResponseBody
-    @GetMapping("/callback")
-    public BaseResponse<String> kakaoCallback(@RequestParam String code){
-        String response = "성공적으로 카카오 로그인 API 코드를 불러왔습니다.";
-        System.out.println(code);
-        return new BaseResponse<>(response);
     }
 
     // KaKao Access Token => 로그인 => JWT 발급.

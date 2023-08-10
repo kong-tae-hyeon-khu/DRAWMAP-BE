@@ -32,6 +32,7 @@ public class UserCourseService {
     private final UserRepository userRepository;
 
     private final ChallengeRepository challengeRepository;
+    private final S3FileService s3FileService;
     @Transactional
     public UserCourse create(List<MultipartFile> files, UserCourseReqDto.CreateUserCourseDto request, Principal principal) throws IOException {
         User user = userRepository.findByNickName(principal.getName())
@@ -44,7 +45,7 @@ public class UserCourseService {
                 .userCourseContent(request.getUserCourseContent())
                 .userCourseComment(request.getUserCourseComment())
                 .userCourseDifficulty(request.getUserCourseDifficulty())
-                .userImage(FileService.fileUpload(files))
+                .userImage(s3FileService.upload(files))
                 .user(user)
                 .build();
 
@@ -56,7 +57,7 @@ public class UserCourseService {
                 .orElseThrow(()-> new NotFoundException("유저개발코스를 찾을 수 없습니다."));
         userCourse.update(request.getUserCourseTitle(), request.getSido(), request.getSgg(),
                 request.getUserCourseDifficulty(), request.getUserCourseContent(),
-                request.getUserCourseComment(), FileService.fileUpload(files));
+                request.getUserCourseComment(), s3FileService.upload(files));
         return userCourse;
     }
 
