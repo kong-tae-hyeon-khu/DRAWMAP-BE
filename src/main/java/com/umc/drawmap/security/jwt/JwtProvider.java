@@ -71,7 +71,7 @@ public class JwtProvider {
                 .build();
     }
 
-    // JWT 를 통해 정보 조회 -> 수정 필요 (User Detail)
+    // JWT 를 통해 정보 조회
     public Authentication getAuthentication(String token) {
         Claims claims = parseClaims(token);
 

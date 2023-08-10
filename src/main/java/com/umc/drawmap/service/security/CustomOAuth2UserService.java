@@ -108,7 +108,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             List<String> stringList = new ArrayList<>();
             stringList.add("User");
             TokenResDto tokenResDto = jwtProvider.createToken(user.getId(), stringList);
-       //     redisTemplate.opsForValue().set("RT:" + authentication.getName(), tokenResDto.getRefreshToken(), tokenResDto.getRefreshTokenExpireDate(), TimeUnit.MILLISECONDS);
+            redisTemplate.opsForValue().set("RT:" + user.getId(), tokenResDto.getRefreshToken(), tokenResDto.getRefreshTokenExpireDate(), TimeUnit.MILLISECONDS);
             return tokenResDto;
         }
         else {
