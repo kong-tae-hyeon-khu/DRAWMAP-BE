@@ -7,8 +7,10 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 public class DrawmapApplication {
 
+	static {
+		System.setProperty("com.amazonaws.sdk.disableEc2Metadata", "true"); // S3 설정
+	}
 	public static void main(String[] args) {
 		SpringApplication.run(DrawmapApplication.class, args);
 	}
-
 }

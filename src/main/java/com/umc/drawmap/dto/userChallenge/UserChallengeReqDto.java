@@ -3,13 +3,13 @@ package com.umc.drawmap.dto.userChallenge;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public class UserChallengeReqDto {
     @Getter
     @Setter
     @NoArgsConstructor
     public static class UserChallengeAddDto {
-        private Long userId;
         private Long challengeId;
         private String challengeComment;
         private int challengeStar;
@@ -24,5 +24,7 @@ public class UserChallengeReqDto {
         private int challengeStar;
         private String challengeImage;
     }
+
+
 
 }

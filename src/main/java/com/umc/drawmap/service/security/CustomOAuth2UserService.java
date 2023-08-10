@@ -97,9 +97,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String email = kakao_account.getEmail();
 
         System.out.println("로그인 시도 하는 유저의 email : " + email);
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, tokenReqDto.getAccess_token());
+       //  UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, tokenReqDto.getAccess_token());
 
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+      //   Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
@@ -108,7 +108,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             List<String> stringList = new ArrayList<>();
             stringList.add("User");
             TokenResDto tokenResDto = jwtProvider.createToken(user.getId(), stringList);
-            redisTemplate.opsForValue().set("RT:" + authentication.getName(), tokenResDto.getRefreshToken(), tokenResDto.getRefreshTokenExpireDate(), TimeUnit.MILLISECONDS);
+       //     redisTemplate.opsForValue().set("RT:" + authentication.getName(), tokenResDto.getRefreshToken(), tokenResDto.getRefreshTokenExpireDate(), TimeUnit.MILLISECONDS);
             return tokenResDto;
         }
         else {

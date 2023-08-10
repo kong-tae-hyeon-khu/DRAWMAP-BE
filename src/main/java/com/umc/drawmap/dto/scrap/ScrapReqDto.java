@@ -9,7 +9,6 @@ public class ScrapReqDto {
     @Setter
     @NoArgsConstructor
     public static class ScrapAddDto {
-        private Long user_id;
         private Long user_course_id;
         private Long challenge_id;
     }

@@ -11,6 +11,7 @@ import com.umc.drawmap.service.security.CustomOAuth2UserService;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -30,7 +31,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestController
+
 public class OauthUserController {
+
     private final CustomOAuth2UserService customOAuth2UserService;
 
     public OauthUserController(CustomOAuth2UserService customOAuth2UserService) {
@@ -43,6 +46,9 @@ public class OauthUserController {
     public String getAccessToken(@RequestParam("code") String code) throws ParseException {
         System.out.println("code = " + code);
 
+
+
+
         // 1. header 생성
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded;charset=utf-8");
@@ -50,7 +56,7 @@ public class OauthUserController {
         // 2. body 생성
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code"); //고정값
-        params.add("client_id", ""); // Client-id 입력해주세요!
+        params.add("client_id", "04b22743f3ac111b7be5dc5b0d3f759a"); // Client-id 입력해주세요!
         params.add("redirect_uri", "http://localhost:9000/callback"); //등록한 redirect uri
         params.add("code", code);
 
