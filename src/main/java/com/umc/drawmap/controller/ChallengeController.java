@@ -1,10 +1,12 @@
 package com.umc.drawmap.controller;
 
 import com.umc.drawmap.domain.Challenge;
+import com.umc.drawmap.domain.User;
 import com.umc.drawmap.dto.challenge.ChallengeConverter;
 import com.umc.drawmap.dto.challenge.ChallengeReqDto;
 import com.umc.drawmap.dto.challenge.ChallengeResDto;
 import com.umc.drawmap.exception.BaseResponse;
+import com.umc.drawmap.repository.UserRepository;
 import com.umc.drawmap.service.ChallengeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.lang.reflect.Member;
+import java.security.Principal;
 import java.util.List;
 
 @Slf4j
@@ -22,11 +26,13 @@ import java.util.List;
 public class ChallengeController {
 
     private final ChallengeService challengeService;
+    private final UserRepository userRepository;
 
     // 도전코스 상세페이지 조회
     @GetMapping("/{courseId}")
-    public BaseResponse<ChallengeResDto.ChallengeDto> getChallenge(@PathVariable(name = "courseId")Long courseId){
+    public BaseResponse<ChallengeResDto.ChallengeDto> getChallenge(@PathVariable(name = "courseId")Long courseId, Principal principal){
         Challenge challenge = challengeService.findById(courseId);
+        System.out.println(principal.getName());
         return new BaseResponse<>(ChallengeConverter.toChallengeDto(challenge));
     }
 

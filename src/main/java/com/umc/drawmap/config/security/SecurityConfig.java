@@ -21,7 +21,7 @@ public class SecurityConfig {
 
     private static final String[] PERMIT_URL_ARRAY = {
             /* swagger v2 */
-            "/v2/api-docs",
+            "/v2/api-docs/**",
             "/swagger-resources",
             "/swagger-resources/**",
             "/configuration/ui",
@@ -30,7 +30,8 @@ public class SecurityConfig {
             "/webjars/**",
             /* swagger v3 */
             "/v3/api-docs/**",
-            "/swagger-ui/**"
+            "/swagger-ui/**",
+            "/swagger.json"
     };
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity)throws Exception {

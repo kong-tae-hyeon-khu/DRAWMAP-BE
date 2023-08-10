@@ -37,7 +37,7 @@ public class ScrapService {
 
     // User - Scrap
     public ScrapResDto.ScrapDto addUserCourseScrap(ScrapReqDto.ScrapAddDto dto, Principal principal) {
-        Optional<User> userOptional = userRepository.findByNickName(principal.getName());
+        Optional<User> userOptional = userRepository.findById(Long.valueOf(principal.getName()));
         Optional<UserCourse> userCourseOptional = userCourseRepository.findById(dto.getUser_course_id());
 
         if (!userOptional.isPresent() || !userCourseOptional.isPresent()) {

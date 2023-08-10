@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -50,7 +51,7 @@ public class OauthUserController {
         // 2. body 생성
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code"); //고정값
-        params.add("client_id", ""); // Client-id 입력해주세요!
+        params.add("client_id", "04b22743f3ac111b7be5dc5b0d3f759a"); // Client-id 입력해주세요!
         params.add("redirect_uri", "http://localhost:9000/callback"); //등록한 redirect uri
         params.add("code", code);
 
@@ -95,8 +96,8 @@ public class OauthUserController {
     }
 
     @PostMapping("/user/signup")
-    public BaseResponse<UserResDto.PostSignDto> signUp(@RequestBody UserReqDto.signUpDto signUpDto) {
-        UserResDto.PostSignDto user = customOAuth2UserService.createUser(signUpDto);
+    public BaseResponse<UserResDto.PostSignDto> signUp(Principal principal, @RequestBody UserReqDto.signUpDto signUpDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        UserResDto.PostSignDto user = customOAuth2UserService.createUser(signUpDto, httpServletRequest, httpServletResponse);
         return new BaseResponse<>(user); // response dto 작업 하는 것도 좋을듯!
     }
 

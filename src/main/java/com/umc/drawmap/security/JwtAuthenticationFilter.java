@@ -25,7 +25,6 @@ public class JwtAuthenticationFilter extends GenericFilter {
 
 
 
-
         if (token != null && jwtProvider.validationToken(token)) {
 
             Authentication authentication = jwtProvider.getAuthentication(token);

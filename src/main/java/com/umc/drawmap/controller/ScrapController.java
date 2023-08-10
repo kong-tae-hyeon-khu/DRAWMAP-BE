@@ -4,6 +4,7 @@ import com.umc.drawmap.dto.scrap.ScrapReqDto;
 import com.umc.drawmap.dto.scrap.ScrapResDto;
 import com.umc.drawmap.exception.BaseResponse;
 import com.umc.drawmap.service.ScrapService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.security.Principal;
 
 
 @RestController
+@Slf4j
 public class ScrapController {
     private ScrapService scrapService;
     public ScrapController(ScrapService scrapService) {
@@ -21,6 +23,7 @@ public class ScrapController {
 
     @PostMapping("/scrap")
     public BaseResponse<ScrapResDto.ScrapDto> addScrap(Principal principal, @RequestBody ScrapReqDto.ScrapAddDto dto) {
+        log.info(principal.getName());
         if (dto.getChallenge_id() == null) {
             return new BaseResponse<>(scrapService.addUserCourseScrap(dto, principal));
         }
