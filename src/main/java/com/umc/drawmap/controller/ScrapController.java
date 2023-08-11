@@ -21,7 +21,7 @@ public class ScrapController {
     }
 
 
-    @PostMapping("/scrap") // 혜진님 여기 principal 받는 부분을 제가 잠시 지웠어요!!
+    @PostMapping("/scrap")
     public BaseResponse<ScrapResDto.ScrapDto> addScrap(@RequestBody ScrapReqDto.ScrapAddDto dto) {
 
         if (dto.getChallenge_id() == null) {

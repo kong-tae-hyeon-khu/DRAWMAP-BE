@@ -54,7 +54,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/callback/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/oauth2/kakao").permitAll()
                 .antMatchers(PERMIT_URL_ARRAY).permitAll() // Swagger 를 제외시키기 위해서.
-                .anyRequest().hasRole("User")
+                .anyRequest().hasAnyRole("User", "Admin")
 
                 // 로그인 안한 사용자도 접근할 수 있는 정보가 있지 않을까??
 

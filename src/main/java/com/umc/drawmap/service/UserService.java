@@ -2,7 +2,9 @@ package com.umc.drawmap.service;
 
 import java.util.ArrayList;
 
+import com.umc.drawmap.domain.Role;
 import com.umc.drawmap.dto.token.TokenResDto;
+import com.umc.drawmap.exception.NotFoundException;
 import com.umc.drawmap.security.jwt.JwtProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -128,6 +130,18 @@ public class UserService extends DefaultOAuth2UserService {
                 .build();
 
         return userDto;
+    }
+
+    // Admin으로 등록
+    public void updateAdmin(){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = ((UserDetails) authentication.getPrincipal()).getUsername();
+        User user = userRepository.findById(Long.parseLong(userId))
+                .orElseThrow(() -> new NotFoundException("유저가 존재하지 않습니다."));
+
+        user.setRole(Role.ROLE_Admin);
+        userRepository.save(user);
     }
 
 

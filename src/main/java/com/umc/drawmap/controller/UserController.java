@@ -39,4 +39,11 @@ public class UserController {
         return new BaseResponse<>(userService.updateUser(dto));
     }
 
+    // Admin으로 등록
+    @PatchMapping("/user/admin")
+    public BaseResponse<String> updateAdmin(){
+        userService.updateAdmin();
+        return new BaseResponse<>("관리자로 등록되었습니다.");
+    }
+
 }

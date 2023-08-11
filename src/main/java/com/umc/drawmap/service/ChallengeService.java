@@ -1,17 +1,14 @@
 package com.umc.drawmap.service;
 
-import com.umc.drawmap.domain.Challenge;
-import com.umc.drawmap.domain.SpotImage;
-import com.umc.drawmap.domain.User;
-import com.umc.drawmap.domain.UserChallenge;
+import com.umc.drawmap.domain.*;
 import com.umc.drawmap.dto.SpotImageResDto;
 import com.umc.drawmap.dto.challenge.ChallengeReqDto;
 import com.umc.drawmap.dto.challenge.ChallengeResDto;
+import com.umc.drawmap.exception.ForbiddenException;
 import com.umc.drawmap.exception.NotFoundException;
 import com.umc.drawmap.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -38,10 +36,18 @@ public class ChallengeService {
     private final S3FileService s3FileService;
     private final ScrapRepository scrapRepository;
 
+
     @Transactional
     public Challenge create(List<MultipartFile> files, ChallengeReqDto.CreateChallengeDto request) throws IOException{
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = ((UserDetails) authentication.getPrincipal()).getUsername();
+        User user = userRepository.findById(Long.parseLong(userId))
+                .orElseThrow(() -> new NotFoundException("유저가 존재하지 않습니다."));
 
+        if(user.getRole() != Role.ROLE_Admin){
+            throw new ForbiddenException("관리자만 접근 가능합니다.");
+        }
 
         Challenge challenge = Challenge.builder()
                 .challengeCourseTitle(request.getChallengeCourseTitle())
@@ -55,7 +61,17 @@ public class ChallengeService {
         return challengeRepository.save(challenge);
     }
     @Transactional
-    public Challenge update(Long challengeId,List<MultipartFile> files, ChallengeReqDto.UpdateChallengeDto request) throws IOException{
+    public Challenge update(Long challengeId,List<MultipartFile> files, ChallengeReqDto.UpdateChallengeDto request) throws IOException {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = ((UserDetails) authentication.getPrincipal()).getUsername();
+        User user = userRepository.findById(Long.parseLong(userId))
+                .orElseThrow(() -> new NotFoundException("유저가 존재하지 않습니다."));
+
+        if(user.getRole() != Role.ROLE_Admin) {
+            throw new ForbiddenException("관리자만 접근 가능합니다.");
+        }
+
         Challenge challenge = challengeRepository.findById(challengeId)
                 .orElseThrow(() -> new NotFoundException("도전코스를 찾을 수 없습니다."));
         challenge.update(request.getChallengeCourseTitle(), request.getSido(), request.getSgg(), request.getChallengeCourseDifficulty(), request.getChallengeCourseContent(), s3FileService.upload(files));
@@ -67,12 +83,15 @@ public class ChallengeService {
     }
 
     public ChallengeResDto.ChallengeDto findById(Long challengeId){
+
         Challenge challenge = challengeRepository.findById(challengeId)
                 .orElseThrow(()-> new NotFoundException("도전코스를 찾을 수 없습니다."));
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = ((UserDetails) authentication.getPrincipal()).getUsername();
         User user = userRepository.findById(Long.parseLong(userId))
                 .orElseThrow(() -> new NotFoundException("유저가 존재하지 않습니다."));
+
         Boolean isScraped = scrapRepository.existsScrapByUserAndChallenge(user, challenge);
 
         return ChallengeResDto.ChallengeDto.builder()
@@ -146,19 +165,62 @@ public class ChallengeService {
     }
 
     // 도전코스 6개씩
-    public Page<Challenge> getPage(int page){
-        PageRequest pageRequest = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return challengeRepository.findAll(pageRequest);
+    public List<ChallengeResDto.ChallengeSortDto> getPage(int page, String sort){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = ((UserDetails) authentication.getPrincipal()).getUsername();
+        User user = userRepository.findById(Long.parseLong(userId))
+                .orElseThrow(() -> new NotFoundException("유저가 존재하지 않습니다."));
+        List<Challenge> challengeList;
+        if(Objects.equals(sort, "likecount")){
+            PageRequest pageRequest = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "scrapCount"));
+            challengeList = challengeRepository.findAll(pageRequest).getContent();
+        }else{
+            PageRequest pageRequest = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "createdAt"));
+            challengeList = challengeRepository.findAll(pageRequest).getContent();
+        }
+        List<ChallengeResDto.ChallengeSortDto> list = new ArrayList<>();
+        for(Challenge c: challengeList){
+            Boolean isScraped = scrapRepository.existsScrapByUserAndChallenge(user, c);
+            ChallengeResDto.ChallengeSortDto result = ChallengeResDto.ChallengeSortDto.builder()
+                    .challengeId(c.getId())
+                    .title(c.getChallengeCourseTitle())
+                    .content(c.getChallengeCourseContent())
+                    .sgg(c.getSgg())
+                    .sido(c.getSido())
+                    .isScraped(isScraped)
+                    .createdDate(c.getCreatedAt())
+                    .image(c.getChallengeImage())
+                    .difficulty(c.getChallengeCourseDifficulty())
+                    .build();
+            list.add(result);
+        }
+        return list;
     }
 
-    public Page<Challenge> getPageByScrap(int page){
-        PageRequest pageRequest = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "scrapCount"));
-        return challengeRepository.findAll(pageRequest);
-    }
-
-    public Page<Challenge> getPageByArea(int page, String sido, String sgg){
-        PageRequest pageRequest = PageRequest.of(page, 6);
-        return challengeRepository.findAllBySidoOrSgg(sido, sgg, pageRequest);
+    public List<ChallengeResDto.ChallengeSortDto> getPageByArea(int page, String sido, String sgg){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = ((UserDetails) authentication.getPrincipal()).getUsername();
+        User user = userRepository.findById(Long.parseLong(userId))
+                .orElseThrow(() -> new NotFoundException("유저가 존재하지 않습니다."));
+        Pageable pageable = PageRequest.of(page, 6);
+        List<Challenge> list = challengeRepository.findAllBySidoOrSgg(sido, sgg, pageable).getContent();
+        List<ChallengeResDto.ChallengeSortDto> resultList = new ArrayList<>();
+        for(Challenge c: list){
+            Boolean isScraped = scrapRepository.existsScrapByUserAndChallenge(user, c);
+            ChallengeResDto.ChallengeSortDto result = ChallengeResDto.ChallengeSortDto.builder()
+                    .challengeId(c.getId())
+                    .title(c.getChallengeCourseTitle())
+                    .content(c.getChallengeCourseContent())
+                    .sgg(c.getSgg())
+                    .sido(c.getSido())
+                    .isScraped(isScraped)
+                    .createdDate(c.getCreatedAt())
+                    .image(c.getChallengeImage())
+                    .difficulty(c.getChallengeCourseDifficulty())
+                    .build();
+            resultList.add(result);
+        }
+        return resultList;
     }
 
     public ChallengeResDto.ChallengeDetailDto getSpotRecommend(Long courseId){

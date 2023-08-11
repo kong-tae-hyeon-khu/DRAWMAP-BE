@@ -35,10 +35,6 @@ public class ScrapService {
     private final UserCourseRepository userCourseRepository;
     private final ChallengeRepository challengeRepository;
 
-    public Boolean findScrapByUserAndChallenge(User user, Challenge challenge){
-        return scrapRepository.existsScrapByUserAndChallenge(user, challenge);
-    }
-
     // User - Scrap
     public ScrapResDto.ScrapDto addUserCourseScrap(ScrapReqDto.ScrapAddDto dto) {
 

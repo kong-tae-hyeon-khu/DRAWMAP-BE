@@ -23,7 +23,7 @@ public class SpotImageController {
     public BaseResponse<String> createSpotImage(@RequestPart(value = "file", required = false) MultipartFile file,
                                                 @ModelAttribute(value = "request")SpotImageReqDto.CreateSpotImageDto request) throws IOException{
 
-        SpotImage spotImage = spotImageService.create(file, request);
+        spotImageService.create(file, request);
         return new BaseResponse<>("새로운 관광지 등록 완료");
 
     }
@@ -32,7 +32,7 @@ public class SpotImageController {
     public BaseResponse<String> updateSpotImage(@PathVariable(name = "courseId") Long courseId, @PathVariable(name = "spotId")Long spotId,
                                                 @RequestPart(value = "file", required = false)MultipartFile file,
                                                 @ModelAttribute SpotImageReqDto.UpdateSpotImageDto request) throws IOException{
-        SpotImage spotImage = spotImageService.update(courseId, spotId, file, request);
+        spotImageService.update(courseId, spotId, file, request);
         return new BaseResponse<>("관광지 수정 완료");
     }
 
