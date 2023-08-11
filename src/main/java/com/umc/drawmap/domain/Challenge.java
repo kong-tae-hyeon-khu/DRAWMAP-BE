@@ -27,6 +27,10 @@ public class Challenge extends BaseEntity {
 
     @Column(name = "challenge_course_content")
     private String challengeCourseContent;
+
+    @Column(name = "challenge_course_path")
+    private String challengeCoursePath;
+
     @Column(name = "challenge_image")
     private String challengeImage;
 

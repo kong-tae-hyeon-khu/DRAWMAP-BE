@@ -35,12 +35,7 @@ public class ScrapService {
     private final UserCourseRepository userCourseRepository;
     private final ChallengeRepository challengeRepository;
 
-    public Boolean findScrapByUserAndChallenge(User user, Challenge challenge){
-        return scrapRepository.existsScrapByUserAndChallenge(user, challenge);
-    }
-
     // User - Scrap
-//<<<<<<< HEAD
     public ScrapResDto.ScrapDto addUserCourseScrap(ScrapReqDto.ScrapAddDto dto) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -48,10 +43,7 @@ public class ScrapService {
         Long userId = Long.parseLong(username);
 
         Optional<User> userOptional = userRepository.findById(userId);
-//=======
-//    public ScrapResDto.ScrapDto addUserCourseScrap(ScrapReqDto.ScrapAddDto dto, Principal principal) {
-//        Optional<User> userOptional = userRepository.findByNickName(principal.getName());
-//>>>>>>> 7f6153b23248e9eb1c51f7d05ad7686408686bf2
+
         Optional<UserCourse> userCourseOptional = userCourseRepository.findById(dto.getUser_course_id());
 
         if (!userOptional.isPresent() || !userCourseOptional.isPresent()) {
@@ -89,10 +81,7 @@ public class ScrapService {
         Long userId = Long.parseLong(username);
 
         Optional<User> userOptional = userRepository.findById(userId);
-//=======
-//    public ScrapResDto.ScrapDto addChallengeScrap(ScrapReqDto.ScrapAddDto dto, Principal principal) {
-//        Optional<User> userOptional = userRepository.findByNickName(principal.getName());
-//>>>>>>> 7f6153b23248e9eb1c51f7d05ad7686408686bf2
+
         Optional<Challenge> challengeOptional = challengeRepository.findById(dto.getChallenge_id());
 
         if (!userOptional.isPresent() || !challengeOptional.isPresent()) {

@@ -14,10 +14,13 @@ public interface UserCourseRepository extends JpaRepository<UserCourse, Long> {
 
     List<UserCourse> findAll();
 
+    Page<UserCourse> findAllByUser(User user, Pageable pageable);
     List<UserCourse> findAllByUser(User user);
 
     Page<UserCourse> findAll(Pageable pageable);
 
     Page<UserCourse> findAllBySidoOrSgg(String sido, String sgg, Pageable pageable);
+
+    Boolean existsByUser(User user);
 
 }

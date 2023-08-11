@@ -27,7 +27,6 @@ public class JwtAuthenticationFilter extends GenericFilter {
 
         // 검증
 
-
         if (token != null && jwtProvider.validationToken(token)) {
 
             // 로그인 후, Redis 에 저장된 Access_Token 도 함께 조회 (상태 관리)

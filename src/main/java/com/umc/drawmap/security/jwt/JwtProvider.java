@@ -1,23 +1,27 @@
 package com.umc.drawmap.security.jwt;
 
 
+import com.umc.drawmap.domain.User;
 import com.umc.drawmap.dto.token.TokenResDto;
+import com.umc.drawmap.exception.NotFoundException;
+import com.umc.drawmap.repository.UserRepository;
 import com.umc.drawmap.security.KakaoAccount;
+import com.umc.drawmap.security.KakaoUserInfo;
+import com.umc.drawmap.security.KakaoUserInfoResponse;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -34,6 +38,8 @@ public class JwtProvider {
     private final UserDetailsService userDetailsService;
 
     private final KakaoAccount kakaoAccount;
+    private final KakaoUserInfo kakaoUserInfo;
+    private final UserRepository userRepository;
 
     @PostConstruct
     protected void init() {
@@ -84,7 +90,8 @@ public class JwtProvider {
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    // Jwt 토큰 복호화(vs 암호화)
+
+     //Jwt 토큰 복호화(vs 암호화)
     private Claims parseClaims(String token) {
         try {
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();

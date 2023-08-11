@@ -24,7 +24,7 @@ public class SecurityConfig {
 
     private static final String[] PERMIT_URL_ARRAY = {
             /* swagger v2 */
-            "/v2/api-docs",
+            "/v2/api-docs/**",
             "/swagger-resources",
             "/swagger-resources/**",
             "/configuration/ui",
@@ -33,15 +33,11 @@ public class SecurityConfig {
             "/webjars/**",
             /* swagger v3 */
             "/v3/api-docs/**",
-            "/swagger-ui/**"
+            "/swagger-ui/**",
+            "/swagger.json"
     };
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity)throws Exception {
-//        httpSecurity
-//                .authorizeRequests()
-//                .anyRequest().permitAll()
-//                .and()
-//                .formLogin().disable();
 
         httpSecurity
                 .httpBasic().disable()
@@ -58,7 +54,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/callback/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/oauth2/kakao").permitAll()
                 .antMatchers(PERMIT_URL_ARRAY).permitAll() // Swagger 를 제외시키기 위해서.
-                .anyRequest().hasRole("User")
+                .anyRequest().hasAnyRole("User", "Admin")
 
                 // 로그인 안한 사용자도 접근할 수 있는 정보가 있지 않을까??
 

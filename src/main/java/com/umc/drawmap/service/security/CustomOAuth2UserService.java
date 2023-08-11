@@ -13,15 +13,19 @@ import com.umc.drawmap.security.KakaoAccount;
 import com.umc.drawmap.security.KakaoUserInfo;
 import com.umc.drawmap.security.KakaoUserInfoResponse;
 import com.umc.drawmap.security.jwt.JwtProvider;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,21 +33,20 @@ import java.util.concurrent.TimeUnit;
 
 
 @Service
+@Slf4j
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
     private final KakaoUserInfo kakaoUserInfo;
 
     private final JwtProvider jwtProvider;
     private final RedisTemplate redisTemplate;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
     public CustomOAuth2UserService(UserRepository userRepository, JwtProvider jwtProvider, KakaoUserInfo kakaoUserInfo,
-                                   RedisTemplate redisTemplate, AuthenticationManagerBuilder authenticationManagerBuilder) {
+                                   RedisTemplate redisTemplate) {
         this.userRepository = userRepository;
         this.jwtProvider = jwtProvider;
         this.kakaoUserInfo = kakaoUserInfo;
         this.redisTemplate = redisTemplate;
-        this.authenticationManagerBuilder = authenticationManagerBuilder;
     }
 
 
@@ -60,7 +63,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             throw new DuplicateUserEmailException(); // 해당 이메일의 유저가 존재.
         }
         String nickName = dto.getNickName();
-        if(dto.getNickName() !=null){
+        if(dto.getNickName() == null){
             nickName = kakaoUserInfoResponse.getProperties().getNickname();
         }
         User user = User.builder()
@@ -97,9 +100,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String email = kakao_account.getEmail();
 
         System.out.println("로그인 시도 하는 유저의 email : " + email);
-       //  UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, tokenReqDto.getAccess_token());
-
-      //   Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
@@ -121,6 +121,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if(!jwtProvider.validationToken(request.getRefresh_token())){
             throw new RuntimeException("Refresh Token 정보가 유효하지 않습니다.");
         }
+
         Authentication authentication = jwtProvider.getAuthentication(request.getAccess_token());
         String refreshToken = (String)redisTemplate.opsForValue().get("RT:" + authentication.getName());
         if(ObjectUtils.isEmpty(refreshToken)){
@@ -139,6 +140,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if(!jwtProvider.validationToken(token.getAccess_token())){
             throw new RuntimeException("잘못된 요청입니다.");
         }
+
         Authentication authentication = jwtProvider.getAuthentication(token.getAccess_token());
         if(redisTemplate.opsForValue().get("RT:"+ authentication.getName())!=null){
             redisTemplate.delete("RT:" +authentication.getName());

@@ -3,25 +3,28 @@ package com.umc.drawmap.service;
 import com.umc.drawmap.domain.User;
 import com.umc.drawmap.domain.UserCourse;
 import com.umc.drawmap.dto.UserCourseReqDto;
+import com.umc.drawmap.dto.UserCourseResDto;
 import com.umc.drawmap.dto.user.UserResDto;
 import com.umc.drawmap.exception.NotFoundException;
-import com.umc.drawmap.repository.ChallengeRepository;
+import com.umc.drawmap.repository.ScrapRepository;
 import com.umc.drawmap.repository.UserCourseRepository;
 import com.umc.drawmap.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -31,12 +34,14 @@ public class UserCourseService {
 
     private final UserRepository userRepository;
 
-    private final ChallengeRepository challengeRepository;
+    private final ScrapRepository scrapRepository;
     private final S3FileService s3FileService;
     @Transactional
-    public UserCourse create(List<MultipartFile> files, UserCourseReqDto.CreateUserCourseDto request, Principal principal) throws IOException {
-        User user = userRepository.findByNickName(principal.getName())
-                .orElseThrow(()-> new NotFoundException("유저를 찾을 수 없습니다."));
+    public UserCourse create(List<MultipartFile> files, UserCourseReqDto.CreateUserCourseDto request) throws IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = ((UserDetails) authentication.getPrincipal()).getUsername();
+        User user = userRepository.findById(Long.parseLong(userId))
+                .orElseThrow(() -> new NotFoundException("유저가 존재하지 않습니다."));
 
         UserCourse userCourse = UserCourse.builder()
                 .userCourseTitle(request.getUserCourseTitle())
@@ -72,30 +77,133 @@ public class UserCourseService {
 
 
     // 유저코스 10개씩
-    public Page<UserCourse> getPage(int page){
-        PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return userCourseRepository.findAll(pageRequest);
+    public List<UserCourseResDto.UserCourseSortDto> getPage(int page, String sort){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = ((UserDetails) authentication.getPrincipal()).getUsername();
+        User user = userRepository.findById(Long.parseLong(userId))
+                .orElseThrow(() -> new NotFoundException("유저가 존재하지 않습니다."));
+
+        List<UserCourse> list;
+        if(Objects.equals(sort, "likecount")){
+            PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "scrapCount"));
+            list = userCourseRepository.findAll(pageRequest).getContent();
+        }else{
+            PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
+            list = userCourseRepository.findAll(pageRequest).getContent();
+        }
+
+        List<UserCourseResDto.UserCourseSortDto> resultList = new ArrayList<>();
+        for (UserCourse userCourse: list){
+            Boolean isMyPost = userCourseRepository.existsByUser(user);
+            Boolean isScraped= scrapRepository.existsScrapByUserAndUserCourse(user, userCourse);
+            UserCourseResDto.UserCourseSortDto result = UserCourseResDto.UserCourseSortDto.builder()
+                    .userCourseId(userCourse.getId())
+                    .sido(userCourse.getSido())
+                    .sgg(userCourse.getSgg())
+                    .isMyPost(isMyPost)
+                    .isScraped(isScraped)
+                    .user(UserResDto.UserDto.builder().userId(userCourse.getUser().getId()).nickName(userCourse.getUser().getNickName()).profileImg(userCourse.getUser().getProfileImg()).build())
+                    .title(userCourse.getUserCourseTitle())
+                    .content(userCourse.getUserCourseContent())
+                    .comment(userCourse.getUserCourseComment())
+                    .image(userCourse.getUserImage())
+                    .createdDate(userCourse.getCreatedAt())
+                    .difficulty(userCourse.getUserCourseDifficulty())
+                    .build();
+            resultList.add(result);
+        }
+        return resultList;
+
     }
 
-    public Page<UserCourse> getPageByScrap(int page){
-        PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "scrapCount"));
-        return userCourseRepository.findAll(pageRequest);
+    public List<UserCourseResDto.UserCourseSortDto> getPageByArea(int page, String sido, String sgg){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = ((UserDetails) authentication.getPrincipal()).getUsername();
+        User user = userRepository.findById(Long.parseLong(userId))
+                .orElseThrow(() -> new NotFoundException("유저가 존재하지 않습니다."));
+
+        Pageable pageable = PageRequest.of(page, 10);
+        List<UserCourse> list = userCourseRepository.findAllBySidoOrSgg(sido, sgg, pageable).getContent();
+
+        List<UserCourseResDto.UserCourseSortDto> resultList = new ArrayList<>();
+        for (UserCourse userCourse: list){
+            Boolean isMyPost = userCourseRepository.existsByUser(user);
+            Boolean isScraped= scrapRepository.existsScrapByUserAndUserCourse(user, userCourse);
+            UserCourseResDto.UserCourseSortDto result = UserCourseResDto.UserCourseSortDto.builder()
+                    .userCourseId(userCourse.getId())
+                    .sido(userCourse.getSido())
+                    .sgg(userCourse.getSgg())
+                    .isMyPost(isMyPost)
+                    .isScraped(isScraped)
+                    .user(UserResDto.UserDto.builder().userId(userCourse.getUser().getId()).nickName(userCourse.getUser().getNickName()).profileImg(userCourse.getUser().getProfileImg()).build())
+                    .title(userCourse.getUserCourseTitle())
+                    .content(userCourse.getUserCourseContent())
+                    .comment(userCourse.getUserCourseComment())
+                    .image(userCourse.getUserImage())
+                    .createdDate(userCourse.getCreatedAt())
+                    .difficulty(userCourse.getUserCourseDifficulty())
+                    .build();
+            resultList.add(result);
+        }
+        return resultList;
     }
 
-    public Page<UserCourse> getPageByArea(int page, String sido, String sgg){
-        PageRequest pageRequest = PageRequest.of(page, 10);
-        return userCourseRepository.findAllBySidoOrSgg(sido, sgg, pageRequest);
+    public List<UserCourseResDto.MyUserCourseDto> findAllByUser(int page){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = ((UserDetails) authentication.getPrincipal()).getUsername();
+        User user = userRepository.findById(Long.parseLong(userId))
+                .orElseThrow(() -> new NotFoundException("유저가 존재하지 않습니다."));
+
+        Pageable pageable = PageRequest.of(page, 6);
+        List<UserCourse> list = userCourseRepository.findAllByUser(user, pageable).getContent();
+
+        List<UserCourseResDto.MyUserCourseDto> resultList = new ArrayList<>();
+        for(UserCourse userCourse: list){
+            UserCourseResDto.MyUserCourseDto result = UserCourseResDto.MyUserCourseDto.builder()
+                    .userCourseId(userCourse.getId())
+                    .sido(userCourse.getSido())
+                    .sgg(userCourse.getSgg())
+                    .image(userCourse.getUserImage())
+                    .createdDate(userCourse.getCreatedAt())
+                    .user(UserResDto.UserDto.builder().userId(userCourse.getUser().getId()).nickName(userCourse.getUser().getNickName()).profileImg(userCourse.getUser().getProfileImg()).build())
+                    .build();
+            resultList.add(result);
+        }
+        return resultList;
+
     }
 
-    public List<UserCourse> findAllByUser(Long userId){
+    public UserCourseResDto.UserCourseDto findById(Long uCourseId){
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다."));
-        return userCourseRepository.findAllByUser(user);
-    }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = ((UserDetails) authentication.getPrincipal()).getUsername();
+        User user = userRepository.findById(Long.parseLong(userId))
+                .orElseThrow(() -> new NotFoundException("유저가 존재하지 않습니다."));
 
-    public UserCourse findById(Long uCourseId){
-        return userCourseRepository.findById(uCourseId).get();
+        UserCourse userCourse = userCourseRepository.findById(uCourseId)
+                .orElseThrow(()-> new NotFoundException("유저코스를 찾을 수 없습니다."));
+
+        Boolean isMyPost = userCourseRepository.existsByUser(user);
+        Boolean isScraped = scrapRepository.existsScrapByUserAndUserCourse(user, userCourse);
+
+        return UserCourseResDto.UserCourseDto.builder()
+                .title(userCourse.getUserCourseTitle())
+                .userCourseId(userCourse.getId())
+                .content(userCourse.getUserCourseContent())
+                .comment(userCourse.getUserCourseComment())
+                .sido(userCourse.getSido())
+                .sgg(userCourse.getSgg())
+                .isScraped(isScraped)
+                .isMyPost(isMyPost)
+                .image(userCourse.getUserImage())
+                .createdDate(userCourse.getCreatedAt())
+                .difficulty(userCourse.getUserCourseDifficulty())
+                .user(UserResDto.UserDto.builder().userId(userCourse.getUser().getId()).nickName(userCourse.getUser().getNickName()).profileImg(userCourse.getUser().getProfileImg()).build())
+                .scrapCount(userCourse.getScrapCount())
+                .build();
     }
 
     public List<UserResDto.UserDto> getTop3User(){

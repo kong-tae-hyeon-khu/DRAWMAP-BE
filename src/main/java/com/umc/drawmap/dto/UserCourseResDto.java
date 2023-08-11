@@ -15,10 +15,12 @@ public class UserCourseResDto {
         private Long userCourseId;
 
         private Boolean isScraped;
+        private Boolean isMyPost;
 
         private String title;
         private LocalDateTime createdDate;
-        //        private String path; // 코스 경로
+
+        //private String path; // 코스 경로
         private String difficulty;
         private String content;
         private String comment;
@@ -81,6 +83,8 @@ public class UserCourseResDto {
         private String sgg;
         private UserResDto.UserDto user;
         private String image;
+        private Boolean isScraped;
+        private Boolean isMyPost;
     }
 
 

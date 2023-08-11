@@ -4,6 +4,8 @@ package com.umc.drawmap.repository;
 import com.umc.drawmap.domain.Challenge;
 import com.umc.drawmap.domain.User;
 import com.umc.drawmap.domain.UserChallenge;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -13,7 +15,7 @@ public interface UserChallengeRepository extends JpaRepository<UserChallenge,Lon
     Optional<UserChallenge> findUserChallengeByUserAndChallenge(User user, Challenge challenge);
     List<UserChallenge> findAll();
 
-    UserChallenge findUserChallengeByChallenge(Challenge challenge);
+    Page<UserChallenge> findAllByUser(User user, Pageable pageable);
 
     List<UserChallenge> findAllByUser(User user);
 }

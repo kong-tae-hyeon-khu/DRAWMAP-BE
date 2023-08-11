@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -91,7 +92,7 @@ public class OauthUserController {
     @PostMapping("/user/signup")
     public BaseResponse<UserResDto.PostSignDto> signUp(@RequestBody UserReqDto.signUpDto signUpDto) {
         UserResDto.PostSignDto user = customOAuth2UserService.createUser(signUpDto);
-        return new BaseResponse<>(user); // response dto 작업 하는 것도 좋을듯!
+        return new BaseResponse<>(user);
     }
 
     @PostMapping("/user/logout")

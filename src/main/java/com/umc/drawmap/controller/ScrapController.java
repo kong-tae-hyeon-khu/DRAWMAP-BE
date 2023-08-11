@@ -4,6 +4,7 @@ import com.umc.drawmap.dto.scrap.ScrapReqDto;
 import com.umc.drawmap.dto.scrap.ScrapResDto;
 import com.umc.drawmap.exception.BaseResponse;
 import com.umc.drawmap.service.ScrapService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.security.Principal;
 
 
 @RestController
+@Slf4j
 public class ScrapController {
     private final ScrapService scrapService;
     public ScrapController(ScrapService scrapService) {
@@ -19,8 +21,9 @@ public class ScrapController {
     }
 
 
-    @PostMapping("/scrap") // 혜진님 여기 principal 받는 부분을 제가 잠시 지웠어요!!
+    @PostMapping("/scrap")
     public BaseResponse<ScrapResDto.ScrapDto> addScrap(@RequestBody ScrapReqDto.ScrapAddDto dto) {
+
         if (dto.getChallenge_id() == null) {
             return new BaseResponse<>(scrapService.addUserCourseScrap(dto));
         }
