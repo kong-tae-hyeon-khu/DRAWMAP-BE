@@ -13,9 +13,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChallengeConverter {
 
-    private static UserChallengeRepository userChallengeRepository;
-    private static UserRepository userRepository;
-    private static ScrapService scrapService;
 
     public static ChallengeResDto.ChallengeDto toChallengeDto(Challenge challenge){
 

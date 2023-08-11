@@ -12,7 +12,7 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long>{
 
     Optional<Challenge> findById(Long challengeId);
 
-    Challenge findChallengeByUserChallenge(UserChallenge userChallenge);
+    Challenge findByUserChallenge(UserChallenge userChallenge);
 
     Page<Challenge> findAll(Pageable pageable);
 

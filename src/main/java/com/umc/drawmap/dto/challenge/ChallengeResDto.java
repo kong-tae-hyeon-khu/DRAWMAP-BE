@@ -54,6 +54,8 @@ public class ChallengeResDto {
         private String sgg;
         private LocalDateTime createdDate;
 
+        private Boolean isScraped;
+
         private String image;
 
     }

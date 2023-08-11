@@ -38,11 +38,6 @@ public class SecurityConfig {
     };
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity)throws Exception {
-//        httpSecurity
-//                .authorizeRequests()
-//                .anyRequest().permitAll()
-//                .and()
-//                .formLogin().disable();
 
         httpSecurity
                 .httpBasic().disable()

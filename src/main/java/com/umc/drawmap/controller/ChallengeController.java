@@ -11,6 +11,7 @@ import com.umc.drawmap.service.ChallengeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,24 +31,20 @@ public class ChallengeController {
 
     // 도전코스 상세페이지 조회
     @GetMapping("/{courseId}")
-    public BaseResponse<ChallengeResDto.ChallengeDto> getChallenge(@PathVariable(name = "courseId")Long courseId, Principal principal){
-        Challenge challenge = challengeService.findById(courseId);
-        System.out.println(principal.getName());
-        return new BaseResponse<>(ChallengeConverter.toChallengeDto(challenge));
+    public BaseResponse<ChallengeResDto.ChallengeDto> getChallenge(@PathVariable(name = "courseId")Long courseId){
+        return new BaseResponse<>(challengeService.findById(courseId));
     }
 
     // 도전코스 전체 리스트 조회 3개씩
     @GetMapping("/courses")
-    public BaseResponse<List<ChallengeResDto.ChallengeDto>> getChallengeList(){
-        List<Challenge> challengeList = challengeService.findAll();
-        return new BaseResponse<>(ChallengeConverter.toChallengeDtoList(challengeList));
+    public BaseResponse<List<ChallengeResDto.ChallengeDto>> getChallengeList(@RequestParam(name = "page")int page){
+        return new BaseResponse<>(challengeService.findAll(page));
     }
 
     // 도전코스 본인 리스트 조회 (참여한 이달의 도전코스) 6개씩
-    @GetMapping("/{userId}/courses")
-    public BaseResponse<List<ChallengeResDto.MyChallengeDto>> getChallengeMyList(@PathVariable(name = "userId")Long userId){
-        List<Challenge> challengeMyList = challengeService.findAllByUser(userId);
-        return new BaseResponse<>(ChallengeConverter.toChallengeDtoMyList(challengeMyList));
+    @GetMapping("/courses/mylist")
+    public BaseResponse<List<ChallengeResDto.MyChallengeDto>> getChallengeMyList(@RequestParam(name = "page")int page){
+        return new BaseResponse<>(challengeService.findAllByUser(page));
     }
 
     // 도전코스 정렬 (최신순) 도전코스 6개씩

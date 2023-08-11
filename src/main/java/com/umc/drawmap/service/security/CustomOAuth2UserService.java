@@ -24,6 +24,8 @@ import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserServ
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -61,7 +63,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             throw new DuplicateUserEmailException(); // 해당 이메일의 유저가 존재.
         }
         String nickName = dto.getNickName();
-        if(dto.getNickName() !=null){
+        if(dto.getNickName() == null){
             nickName = kakaoUserInfoResponse.getProperties().getNickname();
         }
         User user = User.builder()
