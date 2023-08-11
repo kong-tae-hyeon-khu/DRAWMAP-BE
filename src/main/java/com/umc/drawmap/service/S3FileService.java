@@ -27,7 +27,7 @@ public class S3FileService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public String upload(List<MultipartFile> files) { // 더 수정하기 (컨트롤러 , DTO, DB)
+    public String upload(List<MultipartFile> files) {
 
         // S3 에 저장 되는 파일 이름은  업로드 시각 + 유저 이름 으로 하자.
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

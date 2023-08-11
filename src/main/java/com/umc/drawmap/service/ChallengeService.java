@@ -34,9 +34,12 @@ public class ChallengeService {
     private final UserChallengeRepository userChallengeRepository;
     private final UserRepository userRepository;
     private final SpotImageRepository spotImageRepository;
+    private final S3FileService s3FileService;
 
     @Transactional
     public Challenge create(List<MultipartFile> files, ChallengeReqDto.CreateChallengeDto request) throws IOException{
+
+
 
         Challenge challenge = Challenge.builder()
                 .challengeCourseTitle(request.getChallengeCourseTitle())
@@ -44,7 +47,7 @@ public class ChallengeService {
                 .sgg(request.getSgg())
                 .challengeCourseContent(request.getChallengeCourseContent())
                 .challengeCourseDifficulty(request.getChallengeCourseDifficulty())
-                .challengeImage(FileService.fileUpload(files))
+                .challengeImage(s3FileService.upload(files)) // S3 로 수정.
                 .build();
 
         return challengeRepository.save(challenge);
@@ -53,7 +56,7 @@ public class ChallengeService {
     public Challenge update(Long challengeId,List<MultipartFile> files, ChallengeReqDto.UpdateChallengeDto request) throws IOException{
         Challenge challenge = challengeRepository.findById(challengeId)
                 .orElseThrow(() -> new NotFoundException("도전코스를 찾을 수 없습니다."));
-        challenge.update(request.getChallengeCourseTitle(), request.getSido(), request.getSgg(), request.getChallengeCourseDifficulty(), request.getChallengeCourseContent(), FileService.fileUpload(files));
+        challenge.update(request.getChallengeCourseTitle(), request.getSido(), request.getSgg(), request.getChallengeCourseDifficulty(), request.getChallengeCourseContent(), s3FileService.upload(files));
         return challenge;
     }
 
