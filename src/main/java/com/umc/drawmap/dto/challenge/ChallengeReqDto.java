@@ -1,5 +1,6 @@
 package com.umc.drawmap.dto.challenge;
 
+import com.umc.drawmap.domain.Difficulty;
 import lombok.*;
 
 public class ChallengeReqDto {
@@ -15,7 +16,7 @@ public class ChallengeReqDto {
         private String sido;
         private String sgg;
 
-        private String challengeCourseDifficulty;
+        private Difficulty challengeCourseDifficulty;
 
         private String challengeCourseContent;
     }
@@ -31,7 +32,7 @@ public class ChallengeReqDto {
         private String sido;
         private String sgg;
 
-        private String challengeCourseDifficulty;
+        private Difficulty challengeCourseDifficulty;
 
         private String challengeCourseContent;
 

@@ -1,6 +1,7 @@
 package com.umc.drawmap.dto.challenge;
 
 
+import com.umc.drawmap.domain.Difficulty;
 import com.umc.drawmap.dto.SpotImageResDto;
 
 import lombok.*;
@@ -22,7 +23,7 @@ public class ChallengeResDto {
 
         private String title;
         private String path; // 코스 경로
-        private String difficulty;
+        private Difficulty difficulty;
         private String sido;
         private String sgg;
 
@@ -85,7 +86,7 @@ public class ChallengeResDto {
         private Long challengeId;
         private Boolean isScraped; // 현재 유저가 스크랩을 눌렀는지 여부 (하트 색칠 여부)
         private String title;
-        private String difficulty;
+        private Difficulty difficulty;
         private String sido;
         private String sgg;
         private LocalDateTime createdDate;
