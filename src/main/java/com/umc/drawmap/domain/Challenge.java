@@ -23,7 +23,7 @@ public class Challenge extends BaseEntity {
     private String challengeCourseTitle;
 
     @Column(name = "challenge_course_difficulty")
-    private String challengeCourseDifficulty;
+    private String challengeCourseDifficulty; // 상, 중, 하 처리.
 
     @Column(name = "challenge_course_content")
     private String challengeCourseContent;
