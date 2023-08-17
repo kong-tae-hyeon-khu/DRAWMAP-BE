@@ -21,9 +21,10 @@ public class SpotImageService {
 
     private final SpotImageRepository spotImageRepository;
     private final ChallengeRepository challengeRepository;
+    private final S3FileService s3FileService;
 
     @Transactional
-    public SpotImage create(MultipartFile file, SpotImageReqDto.CreateSpotImageDto request) throws IOException{
+    public SpotImage create(List<MultipartFile> files, SpotImageReqDto.CreateSpotImageDto request) throws IOException{
         Challenge challenge = challengeRepository.findById(request.getChallengeId())
                 .orElseThrow(() -> new NotFoundException("도전코스를 찾을 수 없습니다."));
         SpotImage spotImage = SpotImage.builder()
@@ -31,18 +32,19 @@ public class SpotImageService {
                 .sido(request.getSido())
                 .sgg(request.getSgg())
                 .spotContent(request.getContent())
-                .spotImage(FileService.singleFileUpload(file))
+                .spotImage(s3FileService.upload(files))
                 .challenge(challenge)
                 .build();
         return spotImageRepository.save(spotImage);
     }
 
     @Transactional
-    public SpotImage update(Long courseId, Long spotId, MultipartFile file, SpotImageReqDto.UpdateSpotImageDto request) throws IOException{
+    public SpotImage update(Long courseId, Long spotId, List<MultipartFile> files, SpotImageReqDto.UpdateSpotImageDto request) throws IOException{
         Challenge challenge = challengeRepository.findById(courseId)
                 .orElseThrow(() -> new NotFoundException("도전코스를 찾을 수 없습니다."));;
-        SpotImage spotImage = spotImageRepository.findByIdAndChallenge(spotId, challenge);
-        spotImage.update(request.getTitle(), request.getSido(), request.getSgg(), request.getContent(), FileService.singleFileUpload(file));
+        SpotImage spotImage = spotImageRepository.findByIdAndChallenge(spotId, challenge)
+                .orElseThrow(()-> new NotFoundException("관광지를 찾을 수 없습니다."));
+        spotImage.update(request.getTitle(), request.getSido(), request.getSgg(), request.getContent(), s3FileService.upload(files));
         return spotImage;
     }
 
@@ -70,7 +72,9 @@ public class SpotImageService {
     public void delete(Long courseId, Long spotId){
         Challenge challenge = challengeRepository.findById(courseId)
                 .orElseThrow(()-> new NotFoundException("도전코스를 찾을 수 없습니다."));
-        spotImageRepository.deleteByIdAndChallenge(spotId, challenge);
+        SpotImage spotImage = spotImageRepository.findByIdAndChallenge(spotId, challenge)
+                .orElseThrow(()-> new NotFoundException("관광지를 찾을 수 없습니다."));
+        spotImageRepository.delete(spotImage);
 
     }
 

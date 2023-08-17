@@ -1,10 +1,8 @@
 package com.umc.drawmap.repository;
 
-import com.umc.drawmap.domain.Challenge;
+
 import com.umc.drawmap.domain.User;
 import com.umc.drawmap.domain.UserCourse;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -14,13 +12,13 @@ public interface UserCourseRepository extends JpaRepository<UserCourse, Long> {
 
     List<UserCourse> findAll();
 
-    Page<UserCourse> findAllByUser(User user, Pageable pageable);
     List<UserCourse> findAllByUser(User user);
 
-    Page<UserCourse> findAll(Pageable pageable);
-
-    Page<UserCourse> findAllBySidoOrSgg(String sido, String sgg, Pageable pageable);
+    List<UserCourse> findAllBySidoOrSgg(String sido, String sgg);
 
     Boolean existsByUser(User user);
+
+    List<UserCourse> findAllByOrderByCreatedAtDesc();
+    List<UserCourse> findAllByOrderByScrapCountDesc();
 
 }

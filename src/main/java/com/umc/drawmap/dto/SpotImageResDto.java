@@ -24,6 +24,15 @@ public class SpotImageResDto {
     @Getter
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class SpotImageIdDto{
+        private Long spotImageId;
+
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class SpotImageBriefDto{
         private Long spotImageId;
         private String title;

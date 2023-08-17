@@ -19,23 +19,24 @@ public class SpotImageController {
 
     private final SpotImageService spotImageService;
 
-    @PostMapping("/spot")
-    public BaseResponse<String> createSpotImage(@RequestPart(value = "file", required = false) MultipartFile file,
+    @PostMapping(path = "/spot", consumes = {"multipart/form-data"})
+    public BaseResponse<SpotImageResDto.SpotImageIdDto> createSpotImage(@RequestPart(value = "file", required = false) List<MultipartFile> files,
                                                 @ModelAttribute(value = "request")SpotImageReqDto.CreateSpotImageDto request) throws IOException{
 
-        spotImageService.create(file, request);
-        return new BaseResponse<>("새로운 관광지 등록 완료");
+        SpotImage spotImage = spotImageService.create(files, request);
+        return new BaseResponse<>(SpotImageResDto.SpotImageIdDto.builder().spotImageId(spotImage.getId()).build());
 
     }
 
-    @PatchMapping("/spot/{courseId}/{spotId}")
-    public BaseResponse<String> updateSpotImage(@PathVariable(name = "courseId") Long courseId, @PathVariable(name = "spotId")Long spotId,
-                                                @RequestPart(value = "file", required = false)MultipartFile file,
+    @PatchMapping(path = "/spot/{courseId}/{spotId}", consumes = {"multipart/form-data"})
+    public BaseResponse<SpotImageResDto.SpotImageIdDto> updateSpotImage(@PathVariable(name = "courseId") Long courseId, @PathVariable(name = "spotId")Long spotId,
+                                                @RequestPart(value = "file", required = false)List<MultipartFile> files,
                                                 @ModelAttribute SpotImageReqDto.UpdateSpotImageDto request) throws IOException{
-        spotImageService.update(courseId, spotId, file, request);
-        return new BaseResponse<>("관광지 수정 완료");
+        SpotImage spotImage = spotImageService.update(courseId, spotId, files, request);
+        return new BaseResponse<>(SpotImageResDto.SpotImageIdDto.builder().spotImageId(spotImage.getId()).build());
     }
 
+    // 관광지 전체 조회
     @GetMapping("/spot/{courseId}")
     public BaseResponse<List<SpotImageResDto.SpotImageDto>> getSpot(@PathVariable(name = "courseId")Long courseId){
         return new BaseResponse<>(spotImageService.findAllByCourse(courseId));

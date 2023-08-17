@@ -1,20 +1,13 @@
 package com.umc.drawmap.security.jwt;
 
 
-import com.umc.drawmap.domain.User;
 import com.umc.drawmap.dto.token.TokenResDto;
-import com.umc.drawmap.exception.NotFoundException;
-import com.umc.drawmap.repository.UserRepository;
-import com.umc.drawmap.security.KakaoAccount;
-import com.umc.drawmap.security.KakaoUserInfo;
-import com.umc.drawmap.security.KakaoUserInfoResponse;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
@@ -37,9 +30,6 @@ public class JwtProvider {
 
     private final UserDetailsService userDetailsService;
 
-    private final KakaoAccount kakaoAccount;
-    private final KakaoUserInfo kakaoUserInfo;
-    private final UserRepository userRepository;
 
     @PostConstruct
     protected void init() {

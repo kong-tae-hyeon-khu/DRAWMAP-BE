@@ -1,6 +1,5 @@
 package com.umc.drawmap.controller;
 
-import com.umc.drawmap.domain.UserChallenge;
 import com.umc.drawmap.dto.userChallenge.UserChallengeReqDto;
 import com.umc.drawmap.dto.userChallenge.UserChallengeResDto;
 import com.umc.drawmap.exception.BaseResponse;
