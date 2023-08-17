@@ -1,5 +1,6 @@
 package com.umc.drawmap.controller;
 
+import com.umc.drawmap.dto.token.KakaoResTokenDto;
 import com.umc.drawmap.dto.token.TokenReqDto;
 import com.umc.drawmap.dto.token.TokenResDto;
 import com.umc.drawmap.dto.user.UserReqDto;
@@ -10,11 +11,9 @@ import com.umc.drawmap.service.security.CustomOAuth2UserService;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +35,7 @@ public class OauthUserController {
     // 카카오 토큰을 가져 오는 과정을 하나로 합쳐 두었습니다.
     @ResponseBody
     @GetMapping("/callback")
-    public String kakaoCallback(@RequestParam String code) throws ParseException {
+    public KakaoResTokenDto kakaoCallback(@RequestParam String code) throws ParseException {
         System.out.println(code);
         // 1. header 생성
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -54,6 +53,7 @@ public class OauthUserController {
 
         // 4. http 요청하기
         RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
         ResponseEntity<String> response = restTemplate.exchange(
                 "https://kauth.kakao.com/oauth/token",
                 HttpMethod.POST,
@@ -71,7 +71,14 @@ public class OauthUserController {
         token.put("access_token", accessToken);
         token.put("refresh_token", refreshToken);
 
-        return token.toString();
+
+        KakaoResTokenDto kakaoResTokenDto = KakaoResTokenDto.builder()
+                .accessToekn(token.get("access_token"))
+                .refreshToken(token.get("refresh_token"))
+                .build();
+
+
+        return kakaoResTokenDto;
     }
 
     // KaKao Access Token => 로그인 => JWT 발급.
