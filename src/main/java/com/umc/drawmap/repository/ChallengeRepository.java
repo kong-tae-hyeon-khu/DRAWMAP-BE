@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ChallengeRepository extends JpaRepository<Challenge, Long>{
@@ -14,8 +15,9 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long>{
 
     Challenge findByUserChallenge(UserChallenge userChallenge);
 
-    Page<Challenge> findAll(Pageable pageable);
+    List<Challenge> findAllBySidoOrSgg(String sido, String sgg);
 
-    Page<Challenge> findAllBySidoOrSgg(String sido, String sgg, Pageable pageable);
+    List<Challenge> findAllByOrderByScrapCountDesc();
 
+    List<Challenge> findAllByOrderByCreatedAtDesc();
 }

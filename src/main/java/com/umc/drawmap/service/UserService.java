@@ -1,11 +1,8 @@
 package com.umc.drawmap.service;
 
-import java.util.ArrayList;
 
 import com.umc.drawmap.domain.Role;
-import com.umc.drawmap.dto.token.TokenResDto;
 import com.umc.drawmap.exception.NotFoundException;
-import com.umc.drawmap.security.jwt.JwtProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,9 +15,6 @@ import com.umc.drawmap.exception.user.DuplicateUserEmailException;
 import com.umc.drawmap.exception.user.DuplicateUserNickNameException;
 import com.umc.drawmap.exception.userChallenge.NoExistUserException;
 import com.umc.drawmap.repository.UserRepository;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -143,7 +137,5 @@ public class UserService extends DefaultOAuth2UserService {
         user.setRole(Role.ROLE_Admin);
         userRepository.save(user);
     }
-
-
 
 }

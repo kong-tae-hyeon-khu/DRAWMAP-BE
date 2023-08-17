@@ -5,11 +5,7 @@ import com.umc.drawmap.dto.scrap.ScrapResDto;
 import com.umc.drawmap.exception.BaseResponse;
 import com.umc.drawmap.service.ScrapService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 
 
 @RestController

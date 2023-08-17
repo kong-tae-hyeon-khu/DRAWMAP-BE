@@ -44,6 +44,7 @@ public enum BaseResponseStatus {
     ALREADY_DELETED_USER(false, 2028, "이미 탈퇴된 유저입니다."),
     FAILED_TO_UPDATE_PASSWORD(false, 2029, "새 비밀번호 설정에 실패했습니다"),
     FAILED_TO_UPDATE_NICKNAME(false, 2030, "새 닉네임 설정에 실패했습니다"),
+    ROLE_EXCEPTION(false, 2031, "관리자 권한으로 먼저 설정을 해주세요."),
 
     /**
      * 3000 : Response 오류

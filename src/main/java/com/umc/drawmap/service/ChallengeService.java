@@ -9,9 +9,6 @@ import com.umc.drawmap.exception.NotFoundException;
 import com.umc.drawmap.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -78,7 +75,18 @@ public class ChallengeService {
         return challenge;
     }
 
+    @Transactional
     public void delete(Long challengeId){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = ((UserDetails) authentication.getPrincipal()).getUsername();
+        User user = userRepository.findById(Long.parseLong(userId))
+                .orElseThrow(() -> new NotFoundException("유저가 존재하지 않습니다."));
+
+        if(user.getRole() != Role.ROLE_Admin) {
+            throw new ForbiddenException("관리자만 접근 가능합니다.");
+        }
+
         challengeRepository.deleteById(challengeId);
     }
 
@@ -108,13 +116,13 @@ public class ChallengeService {
                 .build();
     }
 
-    public List<ChallengeResDto.MyChallengeDto> findAllByUser(int page){
+    public List<ChallengeResDto.MyChallengeDto> findAllByUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = ((UserDetails) authentication.getPrincipal()).getUsername();
         User user = userRepository.findById(Long.parseLong(userId))
                 .orElseThrow(() -> new NotFoundException("유저가 존재하지 않습니다."));
-        Pageable pageable = PageRequest.of(page, 6);
-        List<UserChallenge> userChallengeList = userChallengeRepository.findAllByUser(user, pageable).getContent();
+
+        List<UserChallenge> userChallengeList = userChallengeRepository.findAllByUser(user);
         List<Challenge> list = new ArrayList<>();
         for (UserChallenge userchallenge: userChallengeList){
             Challenge challenge = challengeRepository.findByUserChallenge(userchallenge);
@@ -136,9 +144,9 @@ public class ChallengeService {
         return resultList;
     }
 
-    public List<ChallengeResDto.ChallengeDto> findAll(int page){
-        Pageable pageable = PageRequest.of(page, 3);
-        List<Challenge> challengeList = challengeRepository.findAll(pageable).getContent();
+    public List<ChallengeResDto.ChallengeDto> findAll(){
+
+        List<Challenge> challengeList = challengeRepository.findAll();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = ((UserDetails) authentication.getPrincipal()).getUsername();
         User user = userRepository.findById(Long.parseLong(userId))
@@ -164,19 +172,19 @@ public class ChallengeService {
         return list;
     }
 
-    // 도전코스 6개씩
-    public List<ChallengeResDto.ChallengeSortDto> getPage(int page, String sort){
+    // 도전코스
+    public List<ChallengeResDto.ChallengeSortDto> getList(String sort){
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = ((UserDetails) authentication.getPrincipal()).getUsername();
         User user = userRepository.findById(Long.parseLong(userId))
                 .orElseThrow(() -> new NotFoundException("유저가 존재하지 않습니다."));
+
         List<Challenge> challengeList;
-        if(Objects.equals(sort, "likecount")){
-            PageRequest pageRequest = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "scrapCount"));
-            challengeList = challengeRepository.findAll(pageRequest).getContent();
+        if(Objects.equals(sort, "scrapcount")){
+            challengeList = challengeRepository.findAllByOrderByScrapCountDesc();
         }else{
-            PageRequest pageRequest = PageRequest.of(page, 6, Sort.by(Sort.Direction.DESC, "createdAt"));
-            challengeList = challengeRepository.findAll(pageRequest).getContent();
+            challengeList = challengeRepository.findAllByOrderByCreatedAtDesc();
         }
         List<ChallengeResDto.ChallengeSortDto> list = new ArrayList<>();
         for(Challenge c: challengeList){
@@ -197,13 +205,13 @@ public class ChallengeService {
         return list;
     }
 
-    public List<ChallengeResDto.ChallengeSortDto> getPageByArea(int page, String sido, String sgg){
+    public List<ChallengeResDto.ChallengeSortDto> getListByArea(String sido, String sgg){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = ((UserDetails) authentication.getPrincipal()).getUsername();
         User user = userRepository.findById(Long.parseLong(userId))
                 .orElseThrow(() -> new NotFoundException("유저가 존재하지 않습니다."));
-        Pageable pageable = PageRequest.of(page, 6);
-        List<Challenge> list = challengeRepository.findAllBySidoOrSgg(sido, sgg, pageable).getContent();
+
+        List<Challenge> list = challengeRepository.findAllBySidoOrSgg(sido, sgg);
         List<ChallengeResDto.ChallengeSortDto> resultList = new ArrayList<>();
         for(Challenge c: list){
             Boolean isScraped = scrapRepository.existsScrapByUserAndChallenge(user, c);

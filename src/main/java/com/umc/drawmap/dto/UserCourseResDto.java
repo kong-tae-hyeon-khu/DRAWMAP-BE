@@ -39,6 +39,15 @@ public class UserCourseResDto {
     @Getter
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class UserCourseIdDto{
+        private Long userCourseId;
+
+    }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class UserCourseListDto{
         private List<UserCourseDto> userCourseList;
     }

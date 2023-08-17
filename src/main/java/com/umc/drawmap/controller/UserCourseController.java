@@ -21,36 +21,36 @@ public class UserCourseController {
     private final UserCourseService userCourseService;
 
     // 등록
-    @PostMapping("/usercourse")
-    public BaseResponse<String> createUserCourse(@RequestPart(value = "files", required = false) List<MultipartFile> files,
-                                                @ModelAttribute(value= "request") UserCourseReqDto.CreateUserCourseDto request) throws IOException {
-        userCourseService.create(files, request);
-        return new BaseResponse<>("유저코스 등록 완료");
+    @PostMapping(path = "/usercourse", consumes = {"multipart/form-data"})
+    public BaseResponse<UserCourseResDto.UserCourseIdDto> createUserCourse(@RequestPart(value = "files", required = false) List<MultipartFile> files,
+                                                 @ModelAttribute(value= "request") UserCourseReqDto.CreateUserCourseDto request) throws IOException {
+        UserCourse userCourse = userCourseService.create(files, request);
+        return new BaseResponse<>(UserCourseResDto.UserCourseIdDto.builder().userCourseId(userCourse.getId()).build());
     }
 
     // 수정
-    @PatchMapping("/usercourse/{ucourseId}")
-    public BaseResponse<String> updateUserCourse(@PathVariable(name = "ucourseId")Long ucourseId,
+    @PatchMapping(path = "/usercourse/{ucourseId}", consumes = {"multipart/form-data"})
+    public BaseResponse<UserCourseResDto.UserCourseIdDto> updateUserCourse(@PathVariable(name = "ucourseId")Long ucourseId,
                                                 @RequestPart(value = "files", required = false) List<MultipartFile> files,
                                                 @ModelAttribute UserCourseReqDto.UpdateUserCourseDto request
     ) throws IOException{
-        userCourseService.update(ucourseId, files, request);
-        return new BaseResponse<>("유저코스 수정 완료");
+        UserCourse userCourse = userCourseService.update(ucourseId, files, request);
+        return new BaseResponse<>(UserCourseResDto.UserCourseIdDto.builder().userCourseId(userCourse.getId()).build());
     }
 
     // 전체 리스트 조회
     @GetMapping("/usercourse")
-    public List<UserCourse> userCourseList() {
+    public List<UserCourseResDto.UserCourseDto> userCourseList() {
         return userCourseService.userCourseList();
     }
 
     // 본인 리스트 조회
     @GetMapping("usercourse/mylist")
-    public BaseResponse<List<UserCourseResDto.MyUserCourseDto>> getUserCourseMyList(@RequestParam(name = "page") int page){
-        return new BaseResponse<>(userCourseService.findAllByUser(page));
+    public BaseResponse<List<UserCourseResDto.MyUserCourseDto>> getUserCourseMyList(){
+        return new BaseResponse<>(userCourseService.findAllByUser());
     }
 
-    // 페이지 조회
+    // 상세 페이지 조회
     @GetMapping("usercourse/{ucourseId}")
     public BaseResponse<UserCourseResDto.UserCourseDto> getUserCourse(@PathVariable(name = "ucourseId") Long ucourseId){
         return new BaseResponse<>(userCourseService.findById(ucourseId));
@@ -63,18 +63,16 @@ public class UserCourseController {
         return new BaseResponse<>("유저코스 삭제 완료");
     }
 
-    // 유저코스 정렬 (최신순, 인기순) 유저코스 10개씩
-    // 페이지 0부터 시작 -> ex) 10개씩 있는 2페이지 조회 PageRequest.of((page)1,(size)10)
+    // 유저코스 정렬 (최신순, 인기순)
     @GetMapping("usercourse/list")
-    public BaseResponse<List<UserCourseResDto.UserCourseSortDto>> getChallengeListByCreatedAt(@RequestParam(name = "page")int page,
-                                                                                              @RequestParam(name = "sort", defaultValue = "createdAt", required = false) String sort){
-        return new BaseResponse<>(userCourseService.getPage(page-1, sort));
+    public BaseResponse<List<UserCourseResDto.UserCourseSortDto>> getChallengeListByCreatedAt(@RequestParam(name = "sort", defaultValue = "createdAt", required = false) String sort){
+        return new BaseResponse<>(userCourseService.getList(sort));
     }
 
     // 유저코스 정렬 (지역별)
     @GetMapping("usercourse/arealist")
-    public BaseResponse<List<UserCourseResDto.UserCourseSortDto>> getChallengeListByArea(@RequestParam(name = "page")int page, @RequestParam(name = "sido") String sido, @RequestParam(name = "sgg") String sgg){
-        return new BaseResponse<>(userCourseService.getPageByArea(page-1, sido, sgg));
+    public BaseResponse<List<UserCourseResDto.UserCourseSortDto>> getChallengeListByArea(@RequestParam(name = "sido") String sido, @RequestParam(name = "sgg") String sgg){
+        return new BaseResponse<>(userCourseService.getListByArea(sido, sgg));
     }
 
     // Top3 유저 정렬 (유저개발코스의 찜 개수)
