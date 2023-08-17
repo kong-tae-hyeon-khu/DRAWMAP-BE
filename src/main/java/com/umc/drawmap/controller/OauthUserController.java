@@ -46,7 +46,7 @@ public class OauthUserController {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code"); //고정값
         params.add("client_id", ""); // Client-id 입력해주세요!
-        params.add("redirect_uri", "http://localhost:9000/callback"); //등록한 redirect uri
+        params.add("redirect_uri", "http://3.94.254.235:9000/callback"); //등록한 redirect uri
         params.add("code", code);
 
         // 3. header + body
