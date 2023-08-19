@@ -44,7 +44,7 @@ public class S3FileService {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        return fileName;
+        return "https://draw-map.s3.amazonaws.com/" + fileName;
     }
 
     public String upload(List<MultipartFile> files) {
