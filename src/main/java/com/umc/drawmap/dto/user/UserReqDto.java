@@ -16,13 +16,9 @@ public class UserReqDto {
     public static class signUpDto {
 
         private String kakao_access_token; // 이를 통해 email 을 지정하자.
-
         private String nickName;
-
-        private String profileImg;
         private String bike;
         private Gender gender;
-
 
         private String sido;
         private String sgg;

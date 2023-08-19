@@ -13,6 +13,7 @@ import com.umc.drawmap.security.KakaoAccount;
 import com.umc.drawmap.security.KakaoUserInfo;
 import com.umc.drawmap.security.KakaoUserInfoResponse;
 import com.umc.drawmap.security.jwt.JwtProvider;
+import com.umc.drawmap.service.S3FileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserServ
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,17 +38,20 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final JwtProvider jwtProvider;
     private final RedisTemplate redisTemplate;
 
+    private final S3FileService s3FileService;
+
     public CustomOAuth2UserService(UserRepository userRepository, JwtProvider jwtProvider, KakaoUserInfo kakaoUserInfo,
-                                   RedisTemplate redisTemplate) {
+                                   RedisTemplate redisTemplate, S3FileService s3FileService) {
         this.userRepository = userRepository;
         this.jwtProvider = jwtProvider;
         this.kakaoUserInfo = kakaoUserInfo;
         this.redisTemplate = redisTemplate;
+        this.s3FileService = s3FileService;
     }
 
 
     @Transactional
-    public UserResDto.PostSignDto createUser(UserReqDto.signUpDto dto) {
+    public UserResDto.PostSignDto createUser(UserReqDto.signUpDto dto, MultipartFile file) {
 
         // 카카오 토큰으로부터 email 을 얻는 과정.
         String access_token = dto.getKakao_access_token();
@@ -61,6 +66,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if(dto.getNickName() == null){
             nickName = kakaoUserInfoResponse.getProperties().getNickname();
         }
+
+
+
         User user = User.builder()
                 .nickName(nickName)
                 .email(email)
@@ -69,7 +77,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .sgg(dto.getSgg())
                 .sido(dto.getSido())
                 .bike(dto.getBike())
-                .profileImg(dto.getProfileImg())
+                .profileImg(s3FileService.uploadImg(file))
                 .build();
 
         userRepository.save(user);

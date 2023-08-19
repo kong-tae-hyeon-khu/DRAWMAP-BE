@@ -18,6 +18,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -89,8 +90,8 @@ public class OauthUserController {
     }
 
     @PostMapping("/user/signup")
-    public BaseResponse<UserResDto.PostSignDto> signUp(@RequestBody UserReqDto.signUpDto signUpDto) {
-        UserResDto.PostSignDto user = customOAuth2UserService.createUser(signUpDto);
+    public BaseResponse<UserResDto.PostSignDto> signUp(@RequestBody UserReqDto.signUpDto signUpDto, @RequestPart(value = "file") MultipartFile file) {
+        UserResDto.PostSignDto user = customOAuth2UserService.createUser(signUpDto, file);
         return new BaseResponse<>(user);
     }
 

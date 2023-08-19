@@ -24,6 +24,29 @@ public class S3FileService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+
+    public String uploadImg(MultipartFile file) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String nowTime = dateFormat.format(new Date());
+        String fileName = nowTime;
+
+        try (InputStream inputStream = file.getInputStream()) {
+
+
+
+            ObjectMetadata fileMetaData = new ObjectMetadata();
+            fileMetaData.setContentType(file.getContentType());
+            fileMetaData.setContentLength(file.getSize());
+
+            amazonS3Client.putObject(bucket, fileName, inputStream, fileMetaData);
+
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return fileName;
+    }
+
     public String upload(List<MultipartFile> files) {
 
         // S3 에 저장 되는 파일 이름은  업로드 시각 + 유저 이름 으로 하자.
