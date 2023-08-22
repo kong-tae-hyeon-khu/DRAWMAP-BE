@@ -89,8 +89,8 @@ public class OauthUserController {
         return new BaseResponse<>(tokenResDto);
     }
 
-    @PostMapping("/user/signup")
-    public BaseResponse<UserResDto.PostSignDto> signUp(@RequestBody UserReqDto.signUpDto signUpDto, @RequestPart(value = "file") MultipartFile file) {
+    @PostMapping(value = "/user/signup", consumes = {"multipart/form-data"})
+    public BaseResponse<UserResDto.PostSignDto> signUp(@ModelAttribute UserReqDto.signUpDto signUpDto, @RequestPart(value = "file") MultipartFile file) {
         UserResDto.PostSignDto user = customOAuth2UserService.createUser(signUpDto, file);
         return new BaseResponse<>(user);
     }
