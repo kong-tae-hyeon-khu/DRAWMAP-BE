@@ -38,9 +38,6 @@ public class User implements UserDetails {
     private String profileImg;
     @Column(name = "bike_category", length = 30)
     private String bike;
-    @Column(name = "gender")
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
@@ -48,11 +45,8 @@ public class User implements UserDetails {
     @Column(name="created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "sido")
-    private String sido;
-
-    @Column(name = "sgg")
-    private String sgg;
+    @Column(name="birth")
+    private String birth;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_challenge_id")

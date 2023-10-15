@@ -43,6 +43,8 @@ dependencies {
 	// redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+	implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
+
 
 	// swagger dependency
 	implementation "io.springfox:springfox-boot-starter:3.0.0"

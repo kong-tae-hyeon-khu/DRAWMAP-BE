@@ -54,8 +54,6 @@ public class UserResDto {
         private String nickName;
         private String email;
         private Role role;
-        private String sido;
-        private String sgg;
         private String bike;
         private String profileImg;
     }

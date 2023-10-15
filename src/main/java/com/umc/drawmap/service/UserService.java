@@ -112,8 +112,6 @@ public class UserService extends DefaultOAuth2UserService {
         user.setNickName(dto.getNickName());
         user.setBike(dto.getBike());
         user.setProfileImg(dto.getProfileImg());
-        user.setSido(dto.getSido());
-        user.setSgg(dto.getSgg());
 
         userRepository.save(user);
 

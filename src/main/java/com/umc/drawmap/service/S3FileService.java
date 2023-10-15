@@ -26,6 +26,11 @@ public class S3FileService {
 
 
     public String uploadImg(MultipartFile file) {
+        if (file == null) {
+            return "";
+        }
+
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String nowTime = dateFormat.format(new Date());
         String fileName = nowTime;

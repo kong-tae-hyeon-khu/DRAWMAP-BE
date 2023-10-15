@@ -46,7 +46,11 @@ public class OauthUserController {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code"); //고정값
         params.add("client_id", ""); // Client-id 입력해주세요!
-        params.add("redirect_uri", "http://3.94.254.235:9000/callback"); //등록한 redirect uri
+
+        // => http://localhost:9000/callback (개발용)
+        // => http://3.94.254.235:9000/callback
+        // http://54.80.0.204:9000/callback (배포용)
+        params.add("redirect_uri", "http://54.80.0.204:9000/callback");
         params.add("code", code);
 
         // 3. header + body
@@ -73,13 +77,11 @@ public class OauthUserController {
         token.put("refresh_token", refreshToken);
 
 
-        KakaoResTokenDto kakaoResTokenDto = KakaoResTokenDto.builder()
+         return KakaoResTokenDto.builder()
                 .accessToekn(token.get("access_token"))
                 .refreshToken(token.get("refresh_token"))
                 .build();
 
-
-        return kakaoResTokenDto;
     }
 
     // KaKao Access Token => 로그인 => JWT 발급.
@@ -90,7 +92,7 @@ public class OauthUserController {
     }
 
     @PostMapping(value = "/user/signup", consumes = {"multipart/form-data"})
-    public BaseResponse<UserResDto.PostSignDto> signUp(@ModelAttribute UserReqDto.signUpDto signUpDto, @RequestPart(value = "file") MultipartFile file) {
+    public BaseResponse<UserResDto.PostSignDto> signUp(@ModelAttribute UserReqDto.signUpDto signUpDto, @RequestPart(value = "file", required = false) MultipartFile file) {
         UserResDto.PostSignDto user = customOAuth2UserService.createUser(signUpDto, file);
         return new BaseResponse<>(user);
     }
@@ -105,6 +107,5 @@ public class OauthUserController {
     public BaseResponse<TokenResDto> reissueToken(@RequestBody TokenReqDto.tokenReqDto token){
         return new BaseResponse<>(customOAuth2UserService.reissue(token));
     }
-
 
 }

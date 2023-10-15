@@ -42,6 +42,7 @@ public class SecurityConfig {
         httpSecurity
                 .httpBasic().disable()
                 .csrf().disable()
+                .formLogin().disable()
 
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

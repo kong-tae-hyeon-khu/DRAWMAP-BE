@@ -72,10 +72,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         User user = User.builder()
                 .nickName(nickName)
                 .email(email)
-                .gender(dto.getGender())
                 .role(Role.ROLE_User) // 기본으로 User 로 지정.
-                .sgg(dto.getSgg())
-                .sido(dto.getSido())
+                .birth(dto.getBirth())
                 .bike(dto.getBike())
                 .profileImg(s3FileService.uploadImg(file))
                 .build();
@@ -86,8 +84,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .accessToken(access_token)
                 .nickName(user.getNickName())
                 .bike(user.getBike())
-                .sgg(user.getSgg())
-                .sido(user.getSido())
                 .email(user.getEmail())
                 .role(user.getRole())
                 .profileImg(user.getProfileImg())
